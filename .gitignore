@@ -3,4 +3,6 @@ node_modules/
 dist/
 .vite/
 .cache/
+.npm-cache/
+docs/.vitepress/dist/
 *.log

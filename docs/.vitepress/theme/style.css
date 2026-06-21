@@ -1,0 +1,38 @@
+:root {
+  --vp-c-brand-1: #2f6feb;
+  --vp-c-brand-2: #1f4fbf;
+  --vp-c-brand-3: #7db4ff;
+  --vp-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --vp-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.VPHomeHero .name,
+.VPHomeHero .text {
+  font-family: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+}
+
+.VPHomeHero .name {
+  color: #3f6fa8;
+}
+
+.dark .VPHomeHero .name {
+  color: #9cc8ff;
+}
+
+.VPHomeHero .image-bg {
+  background-image: linear-gradient(135deg, rgba(47, 111, 235, 0.22), rgba(47, 111, 235, 0.04));
+}
+
+.vp-doc h2 {
+  border-top: 0;
+}
+
+.vp-doc table {
+  display: table;
+  width: 100%;
+}
+
+.vp-doc .custom-block.info {
+  border-color: rgba(47, 111, 235, 0.2);
+  background-color: rgba(47, 111, 235, 0.06);
+}
