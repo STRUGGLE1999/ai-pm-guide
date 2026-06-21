@@ -4,7 +4,7 @@
 
 - GitHub 仓库：[STRUGGLE1999/ai-pm-guide](https://github.com/STRUGGLE1999/ai-pm-guide)
 - GitHub Pages：[https://struggle1999.github.io/ai-pm-guide/](https://struggle1999.github.io/ai-pm-guide/)
-- Netlify：部署完成后补充正式地址
+- Netlify：[https://ai-pm-guide.netlify.app](https://ai-pm-guide.netlify.app)
 
 ## 核心入口
 

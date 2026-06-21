@@ -6,3 +6,6 @@ dist/
 .npm-cache/
 docs/.vitepress/dist/
 *.log
+
+# Local Netlify folder
+.netlify
