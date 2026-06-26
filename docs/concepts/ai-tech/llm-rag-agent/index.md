@@ -1,0 +1,103 @@
+# 大模型、RAG 与 Agent 导读
+
+这一组是 技术读者最常用的应用层能力。LLM 负责语言理解和生成，RAG 负责接企业知识，工具调用负责接业务系统，Agent 负责处理路径不固定的任务。
+
+<figure class="article-figure">
+  <img src="/concepts/ai-tech/02-flowchart-llm-call-chain.png" alt="大语言模型调用链路">
+  <figcaption>LLM 系统需要把输入、上下文、模型、结构化输出和后处理串成可控链路。</figcaption>
+</figure>
+
+## 建议顺序
+
+1. [大语言模型基础](/concepts/ai-tech/llm-rag-agent/llm-basics)
+2. [RAG 与知识库](/concepts/ai-tech/llm-rag-agent/rag-knowledge-base)
+3. [对话式 AI](/concepts/ai-tech/llm-rag-agent/conversational-ai)
+4. [工具调用与工作流](/concepts/ai-tech/llm-rag-agent/tool-calling-workflow)
+5. [Agent、MCP 与多智能体](/concepts/ai-tech/llm-rag-agent/agent-mcp)
+6. [数据标注与专属数据集](/concepts/ai-tech/llm-rag-agent/data-annotation-bespoke-datasets)
+7. [多模态与上传图片](/concepts/ai-tech/llm-rag-agent/multimodal-upload)
+
+学完这一组，你应该能设计一个 AI 功能的能力组合，而不是只写“接入大模型”；也能判断什么时候要做知识库、什么时候要接工具、什么时候要补数据集和标注流程。
+
+## 工程实践要点
+
+大模型应用的关键不是“接入模型”，而是把模型放进可控链路：用户输入、上下文、知识库、工具、权限、输出格式、人工确认和日志追踪。每个环节都可能决定功能能不能上线。
+
+| 能力 | 适合解决 | 必须补上的约束 |
+| --- | --- | --- |
+| LLM | 理解、生成、总结、抽取。 | 输出格式、拒答、安全边界。 |
+| RAG | 接企业知识和最新资料。 | 来源、权限、切分、召回和引用。 |
+| Tool Calling | 查询或修改业务系统。 | 服务端鉴权、参数校验、二次确认。 |
+| Agent | 路径不固定的多步任务。 | 步数预算、工具范围、日志和退出条件。 |
+
+<figure class="article-figure">
+  <img src="/concepts/ai-tech/03-flowchart-rag-pipeline.png" alt="RAG 检索增强链路">
+  <figcaption>RAG、工具和 Agent 都依赖清晰的资料、权限、检索和证据链。</figcaption>
+</figure>
+
+## 示例代码
+
+下面是一个最小 LLM 调用伪代码，展示输入、上下文、模型调用和输出校验的结构：
+
+```python
+def answer(question, context):
+    prompt = f"""基于资料回答问题。
+资料：{context}
+问题：{question}
+"""
+    result = call_model(prompt)
+    if not result.strip():
+        return {"status": "empty", "answer": None}
+    return {"status": "ok", "answer": result}
+```
+
+真实系统需要把检索、权限、引用、结构化输出、日志和错误处理补齐。
+<!-- ai-tech-real-v1 -->
+
+## 技术细节拆解
+
+大模型、RAG 与 Agent 导读 可以拆成输入、处理、输出和指标四层。这样读的时候不会停留在概念名，而是能看到它在系统里接收什么、改变什么、产出什么。
+
+| 层次 | 具体内容 |
+| --- | --- |
+| 输入 | 用户问题、系统提示词、历史对话、检索片段、工具 schema。 |
+| 处理 | 上下文组装、模型调用、工具调用、输出解析、权限校验。 |
+| 输出 | 自然语言、JSON、引用、工具结果、拒答信息。 |
+| 指标 | 准确率、引用命中率、格式成功率、工具成功率、成本、延迟。 |
+
+## 关键参数和边界
+
+| 参数/边界 | 说明 |
+| --- | --- |
+| temperature | 越高越发散，越低越稳定。 |
+| max_tokens | 限制输出长度，也影响成本和截断风险。 |
+| top_p | 控制采样范围，通常和 temperature 配合。 |
+| schema | 结构化输出必须有 schema 和校验。 |
+
+## 可运行检查
+
+```python
+import json
+
+raw = '{"answer":"可以办理", "confidence":0.82}'
+data = json.loads(raw)
+assert "answer" in data
+assert 0 <= data["confidence"] <= 1
+print(data)
+```
+
+## 怎么判断学懂了
+
+| 判断点 | 具体标准 |
+| --- | --- |
+| 格式稳定性 | 结构化输出能否被程序稳定解析。 |
+| 证据一致性 | 回答是否能追溯到检索片段或工具结果。 |
+| 权限安全 | 不同用户只能检索和调用授权范围内的资源。 |
+
+## 常见误区和排查
+
+| 问题 | 为什么会发生 | 怎么排查 |
+| --- | --- | --- |
+| 回答没有证据 | 模型自由发挥，没绑定检索片段。 | 强制引用来源并校验引用存在。 |
+| 工具参数不合法 | 模型输出 JSON 不符合接口要求。 | 用 schema 校验，失败时让模型重试或拒绝执行。 |
+| 权限穿透 | 检索阶段没有按用户权限过滤。 | 把用户身份加入检索条件并记录审计日志。 |

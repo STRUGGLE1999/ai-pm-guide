@@ -1,6 +1,7 @@
 # 资源推荐
 
 - [公开课与文档](/resources/courses-docs)
+- [专业书籍](/resources/professional-books)
 - [工具与产品案例](/resources/tools-products)
 - [报告与 Newsletter](/resources/reports-newsletters)
 
