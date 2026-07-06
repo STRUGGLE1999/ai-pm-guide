@@ -26,13 +26,13 @@ AI 技术基础不要求你先学会推公式，更重要的是能看懂一个 A
 | 子目录 | 先读页面 | 学完要能回答 |
 | --- | --- | --- |
 | [基础](/concepts/ai-tech/foundations/linux-basics) | Linux、Python/NumPy、PyTorch 快速入门、Git、Python 爬虫。 | AI 项目里的文件、脚本、日志、环境和数据采集卡在哪里？ |
-| [机器学习](/concepts/ai-tech/ml/overview) | 机器学习教程、机器学习简介、监督/无监督、十大算法、概率统计、线代微积分。 | 这个需求是否适合机器学习？指标和数据是否够验收？ |
+| [机器学习](/concepts/ai-tech/ml/overview) | 机器学习教程、机器学习简介、机器学习如何工作、基础概念、Python 入门、进阶和十大算法。 | 这个需求是否适合机器学习？指标和数据是否够验收？ |
 | [NLP 教程](/concepts/ai-tech/nlp/text-preprocessing) | 文本预处理、表示、分类、NER、关系抽取、相似度、RNN、Attention、Transformer。 | 文本能力到底是在分类、抽取、匹配、生成，还是检索？ |
 | [Deploy 知识库共建](/concepts/ai-tech/deployment/model-deployment-basics) | CH1 到 CH8：部署基础、大模型架构、CUDA、Triton、量化、底层和系统加速。 | 上线后为什么会慢、贵、不稳定，怎么定位？ |
 | [LLM101n-CN（共建中）](/concepts/ai-tech/deep-learning/mlp-forward) | ngram、MLP、micrograd、Tensor、自动微分。 | 大模型背后的最小模型和训练直觉是什么？ |
 | [PyTorch 教程](/concepts/ai-tech/frameworks/pytorch-basics) | PyTorch 基础、Tensor、神经网络、数据加载、CNN、RNN、Transformer、模型部署。 | 算法实验到生产服务之间还缺哪些工程环节？ |
 | [TensorFlow 教程](/concepts/ai-tech/frameworks/tensorflow-basics) | TensorFlow 简介、核心概念、Keras、数据管道、训练、评估与监控。 | 训练框架如何承接数据、模型和上线监控？ |
-| [吴恩达 机器学习笔记](/concepts/ai-tech/ml/supervised-learning) | 监督学习、无监督学习、推荐系统、强化学习、机器学习技巧。 | 如何把课程知识翻译成 AI 系统任务和指标？ |
+| [吴恩达 机器学习笔记](/concepts/ai-tech/ml/andrew-supervised-learning) | 监督学习、无监督学习、推荐系统、强化学习、机器学习技巧。 | 如何把课程知识翻译成 AI 系统任务和指标？ |
 | [吴恩达 DeepLearning.AI 课程系列](/concepts/ai-tech/deep-learning/neural-networks) | 预训练、微调、提示词工程、神经网络、CNN、序列模型。 | 模型训练、微调和推理背后的关键限制是什么？ |
 | [大模型应用工程](/concepts/ai-tech/llm-rag-agent/llm-basics) | LLM、RAG、对话式 AI、工具调用、Agent、多模态上传、评测、成本、安全。 | AI 功能如何连接知识、工具、权限、数据和用户操作？ |
 

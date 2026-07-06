@@ -32,9 +32,9 @@ const aiTechGroups = [
       { text: 'Git 基础知识', link: '/concepts/ai-tech/foundations/git-basics' },
       {
         text: 'Python',
-        link: '/concepts/ai-tech/foundations/python-basics',
         collapsed: false,
         items: [
+          { text: 'Python 基础', link: '/concepts/ai-tech/foundations/python-basics' },
           { text: 'Python 速记表', link: '/concepts/ai-tech/foundations/python-memento' },
           { text: 'Python 速查表', link: '/concepts/ai-tech/foundations/python-cheatsheet' },
           { text: '初学者的 Python 备忘表', link: '/concepts/ai-tech/foundations/python-beginner-cheatsheet' }
@@ -58,15 +58,32 @@ const aiTechGroups = [
     collapsed: true,
     items: [
       { text: '机器学习教程', link: '/concepts/ai-tech/ml/' },
-      { text: '机器学习简介', link: '/concepts/ai-tech/ml/overview' },
+      {
+        text: '🤖 机器学习简介',
+        collapsed: false,
+        items: [
+          { text: '🤖 机器学习如何工作', link: '/concepts/ai-tech/ml/how-machine-learning-works' },
+          { text: '🤖 机器学习基础概念', link: '/concepts/ai-tech/ml/basic-concepts' }
+        ]
+      },
       { text: 'Python 入门机器学习', link: '/concepts/ai-tech/ml/python-machine-learning' },
       { text: '机器学习进阶', link: '/concepts/ai-tech/ml/ml-advanced' },
-      { text: '机器学习十大算法', link: '/concepts/ai-tech/ml/classic-algorithms' },
-      { text: '概率和统计', link: '/concepts/ai-tech/ml/probability-statistics' },
-      { text: '机器学习技巧和秘诀', link: '/concepts/ai-tech/ml/ml-tips-secrets' },
-      { text: '监督学习', link: '/concepts/ai-tech/ml/supervised-learning' },
-      { text: '无监督学习', link: '/concepts/ai-tech/ml/unsupervised-learning' },
-      { text: '线性代数和微积分', link: '/concepts/ai-tech/ml/linear-algebra-calculus' }
+      {
+        text: '🤖 机器学习十大算法',
+        collapsed: false,
+        items: [
+          { text: '🤖 K 近邻算法', link: '/concepts/ai-tech/ml/knn' },
+          { text: '🤖 线性回归（Linear Regression）', link: '/concepts/ai-tech/ml/linear-regression' },
+          { text: '🤖 逻辑回归（Logistic Regression）', link: '/concepts/ai-tech/ml/logistic-regression' },
+          { text: '🤖 决策树（Decision Tree）', link: '/concepts/ai-tech/ml/decision-tree' },
+          { text: '🤖 支持向量机', link: '/concepts/ai-tech/ml/support-vector-machine' },
+          { text: '🤖 随机森林分类模型详解', link: '/concepts/ai-tech/ml/random-forest' },
+          { text: '🤖 朴素贝叶斯', link: '/concepts/ai-tech/ml/naive-bayes' },
+          { text: '🤖 K-means【机器学习】', link: '/concepts/ai-tech/ml/k-means' },
+          { text: '🤖 主成分分析（PCA）', link: '/concepts/ai-tech/ml/pca' },
+          { text: '🤖 XGBoost模型详解', link: '/concepts/ai-tech/ml/xgboost' }
+        ]
+      }
     ]
   },
   {
