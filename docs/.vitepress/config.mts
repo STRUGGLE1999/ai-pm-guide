@@ -40,11 +40,17 @@ const aiTechGroups = [
           { text: '初学者的 Python 备忘表', link: '/concepts/ai-tech/foundations/python-beginner-cheatsheet' }
         ]
       },
-      { text: 'Python 爬虫教程：从入门到实战', link: '/concepts/ai-tech/foundations/python-crawler' },
-      { text: 'Python 快速上手爬虫的 7 大技巧', link: '/concepts/ai-tech/foundations/python-crawler-tips' },
-      { text: 'Python 爬虫之网页字符编码处理', link: '/concepts/ai-tech/foundations/python-crawler-encoding' },
-      { text: 'Python 爬虫 | 任务调度之 Celery', link: '/concepts/ai-tech/foundations/python-crawler-celery' },
-      { text: 'Python 爬虫实例', link: '/concepts/ai-tech/foundations/python-crawler-examples' }
+      {
+        text: 'Python爬虫教程',
+        collapsed: false,
+        items: [
+          { text: 'Python爬虫教程：从入门到实战', link: '/concepts/ai-tech/foundations/python-crawler' },
+          { text: 'Python快速上手爬虫的7大技巧', link: '/concepts/ai-tech/foundations/python-crawler-tips' },
+          { text: 'Python爬虫之网页字符编码处理', link: '/concepts/ai-tech/foundations/python-crawler-encoding' },
+          { text: 'Python 爬虫 | 任务调度之 Celery', link: '/concepts/ai-tech/foundations/python-crawler-celery' },
+          { text: 'Python爬虫实例', link: '/concepts/ai-tech/foundations/python-crawler-examples' }
+        ]
+      }
     ]
   },
   {
