@@ -83,6 +83,17 @@ const aiTechGroups = [
           { text: '🤖 主成分分析（PCA）', link: '/concepts/ai-tech/ml/pca' },
           { text: '🤖 XGBoost模型详解', link: '/concepts/ai-tech/ml/xgboost' }
         ]
+      },
+      {
+        text: '机器学习实践与延伸',
+        collapsed: false,
+        items: [
+          { text: '从训练到调优：可复用工作流', link: '/concepts/ai-tech/ml/workflow' },
+          { text: '模型部署、预测与反馈循环', link: '/concepts/ai-tech/ml/deployment-feedback' },
+          { text: '常见误区与排错清单', link: '/concepts/ai-tech/ml/pitfalls' },
+          { text: '初学者实践路线', link: '/concepts/ai-tech/ml/beginner-roadmap' },
+          { text: '结语与延伸学习', link: '/concepts/ai-tech/ml/conclusion-resources' }
+        ]
       }
     ]
   },
@@ -320,9 +331,27 @@ export default defineConfig({
       pattern: 'https://github.com/STRUGGLE1999/ai-pm-guide/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页'
     },
-    footer: {
+  footer: {
       message: '学习分享型 AI 产品经理知识库，不做付费课、社群、会员或商业引流。',
       copyright: 'Copyright © 2026 AI PM Guide'
+    }
+  },
+  markdown: {
+    config(md) {
+      const defaultFence =
+        md.renderer.rules.fence ||
+        ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+
+      md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+        const token = tokens[idx]
+        const language = token.info.trim().split(/\s+/)[0]
+
+        if (language === 'mermaid') {
+          return `<pre class="mermaid">${md.utils.escapeHtml(token.content)}</pre>`
+        }
+
+        return defaultFence(tokens, idx, options, env, self)
+      }
     }
   }
 })

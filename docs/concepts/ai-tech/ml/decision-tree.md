@@ -73,3 +73,46 @@ X_train, X_test, y_train, y_test = train_test_split(
 ### 3. 训练决策树模型
 
 ```python
+# max_depth 是防止树无限生长的一个重要超参数
+model = DecisionTreeClassifier(
+    max_depth=3,
+    min_samples_leaf=3,
+    random_state=42
+)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print("准确率：", accuracy_score(y_test, y_pred))
+```
+
+可视化树结构：
+
+```python
+plt.figure(figsize=(16, 8))
+plot_tree(
+    model,
+    feature_names=iris.feature_names,
+    class_names=iris.target_names,
+    filled=True,
+    rounded=True
+)
+plt.title("鸢尾花决策树")
+plt.show()
+```
+
+### 4. 观察过拟合：比较不同树深度
+
+```python
+for depth in [1, 2, 3, 5, None]:
+    tree = DecisionTreeClassifier(max_depth=depth, random_state=42)
+    tree.fit(X_train, y_train)
+    print(
+        f"max_depth={depth}, "
+        f"train_acc={tree.score(X_train, y_train):.3f}, "
+        f"test_acc={tree.score(X_test, y_test):.3f}"
+    )
+```
+
+若树深度不断增加，训练准确率趋近 1，但测试准确率下降，就说明过拟合正在发生。
+
+---

@@ -84,3 +84,77 @@ print("KNN 准确率：", accuracy_score(y_test, y_pred))
 ### 6. 可视化 KNN 分类结果
 
 ```python
+# 将标准化后的训练数据用于绘图
+scaler = knn_pipeline.named_steps["scaler"]
+knn = knn_pipeline.named_steps["knn"]
+X_train_scaled = scaler.transform(X_train)
+
+x_min, x_max = X_train_scaled[:, 0].min() - 0.5, X_train_scaled[:, 0].max() + 0.5
+y_min, y_max = X_train_scaled[:, 1].min() - 0.5, X_train_scaled[:, 1].max() + 0.5
+xx, yy = np.meshgrid(
+    np.linspace(x_min, x_max, 300),
+    np.linspace(y_min, y_max, 300)
+)
+
+Z = knn.predict(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
+
+plt.contourf(xx, yy, Z, alpha=0.25, cmap="viridis")
+plt.scatter(X_train_scaled[:, 0], X_train_scaled[:, 1], c=y_train, edgecolor="k", cmap="viridis")
+plt.xlabel("标准化后的特征 1")
+plt.ylabel("标准化后的特征 2")
+plt.title("KNN 分类边界")
+plt.show()
+```
+
+### 7. 调整 K 值
+
+K 太小，模型容易受噪声影响；K 太大，边界会过于平滑，可能欠拟合。可以用验证集或交叉验证选择 K。
+
+```python
+scores = []
+k_values = range(1, 21)
+
+for k in k_values:
+    model = Pipeline([
+        ("scaler", StandardScaler()),
+        ("knn", KNeighborsClassifier(n_neighbors=k))
+    ])
+    model.fit(X_train, y_train)
+    scores.append(model.score(X_test, y_test))
+
+plt.plot(list(k_values), scores, marker="o")
+plt.xlabel("K 值")
+plt.ylabel("测试集准确率")
+plt.title("不同 K 值的效果")
+plt.show()
+```
+
+> 严格来说，选择 K 时不应反复使用测试集；更规范的做法是使用交叉验证或单独验证集。
+
+### 8. 使用 KNN 进行回归任务
+
+```python
+from sklearn.datasets import make_regression
+
+X_reg, y_reg = make_regression(
+    n_samples=200,
+    n_features=1,
+    noise=15,
+    random_state=42
+)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_reg, y_reg, test_size=0.2, random_state=42
+)
+
+reg_pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("knn", KNeighborsRegressor(n_neighbors=8, weights="distance"))
+])
+
+reg_pipeline.fit(X_train, y_train)
+y_pred = reg_pipeline.predict(X_test)
+print("KNN 回归 MAE：", mean_absolute_error(y_test, y_pred))
+```
+
+---

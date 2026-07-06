@@ -95,6 +95,26 @@
   background-color: rgba(47, 111, 235, 0.06);
 }
 
+.vp-doc .mermaid {
+  margin: 24px 0;
+  padding: 18px;
+  overflow-x: auto;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+  text-align: center;
+}
+
+.vp-doc mjx-container[jax="SVG"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.vp-doc mjx-container[display="true"] {
+  margin: 22px 0;
+}
+
 .VPDocAsideOutline .VPDocOutlineItem .outline-link.active {
   color: #2f6feb !important;
   -webkit-text-fill-color: #2f6feb;

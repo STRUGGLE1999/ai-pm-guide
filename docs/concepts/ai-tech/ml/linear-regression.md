@@ -113,3 +113,42 @@ plt.show()
 
 ```python
 import numpy as np
+
+# X 的形状为 (n, 1)，便于演示单特征线性回归
+X_gd = X_train[:, 0]
+y_gd = y_train
+
+w = 0.0
+b = 0.0
+learning_rate = 0.1
+epochs = 1000
+n = len(X_gd)
+
+loss_history = []
+
+for _ in range(epochs):
+    y_hat = w * X_gd + b
+    error = y_hat - y_gd
+
+    # MSE 对 w、b 的梯度
+    dw = (2 / n) * np.sum(error * X_gd)
+    db = (2 / n) * np.sum(error)
+
+    # 更新参数
+    w -= learning_rate * dw
+    b -= learning_rate * db
+
+    loss = np.mean(error ** 2)
+    loss_history.append(loss)
+
+print("梯度下降得到的 w：", w)
+print("梯度下降得到的 b：", b)
+
+plt.plot(loss_history)
+plt.xlabel("迭代次数")
+plt.ylabel("MSE Loss")
+plt.title("梯度下降过程中的损失下降")
+plt.show()
+```
+
+---

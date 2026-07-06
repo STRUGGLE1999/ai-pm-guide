@@ -10,12 +10,12 @@ K-means 是最常见的聚类算法之一。它需要你预先指定要分成几
 
 ```mermaid
 flowchart TD
-A[随机初始化 K 个中心点] --> B[计算每个样本到各中心的距离]
-B --> C[把样本分配给最近中心]
-C --> D[每个簇重新计算均值中心]
-D --> E{中心点是否基本不再变化？}
+A["随机初始化 K 个中心点"] --> B["计算每个样本到各中心的距离"]
+B --> C["把样本分配给最近中心"]
+C --> D["每个簇重新计算均值中心"]
+D --> E{"中心点是否基本不再变化？"}
 E -- 否 --> B
-E -- 是 --> F[输出簇标签与中心点]
+E -- 是 --> F["输出簇标签与中心点"]
 ```
 
 更具体地说：
@@ -82,3 +82,92 @@ X, _ = make_blobs(
     cluster_std=[1.0, 1.2, 0.8, 1.1],
     random_state=42
 )
+
+# 对距离敏感的聚类算法，通常先标准化
+X_scaled = StandardScaler().fit_transform(X)
+```
+
+### 3.2 合理选择 K 值
+
+### 方法一：肘部法（Elbow Method）
+
+计算不同 K 下的 Inertia，寻找“继续增加 K 后收益明显变小”的拐点。
+
+```python
+inertias = []
+k_values = range(2, 11)
+
+for k in k_values:
+    km = KMeans(n_clusters=k, n_init=10, random_state=42)
+    km.fit(X_scaled)
+    inertias.append(km.inertia_)
+
+plt.plot(list(k_values), inertias, marker="o")
+plt.xlabel("K")
+plt.ylabel("Inertia（簇内平方和）")
+plt.title("K-means 肘部法")
+plt.show()
+```
+
+### 方法二：轮廓系数
+
+```python
+for k in range(2, 8):
+    km = KMeans(n_clusters=k, n_init=10, random_state=42)
+    labels = km.fit_predict(X_scaled)
+    score = silhouette_score(X_scaled, labels)
+    print(f"K={k}, silhouette={score:.3f}")
+```
+
+最后训练并画图：
+
+```python
+final_k = 4
+kmeans = KMeans(n_clusters=final_k, n_init=10, random_state=42)
+labels = kmeans.fit_predict(X_scaled)
+
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=labels, cmap="tab10", alpha=0.7)
+plt.scatter(
+    kmeans.cluster_centers_[:, 0],
+    kmeans.cluster_centers_[:, 1],
+    c="red",
+    marker="X",
+    s=200,
+    label="中心点"
+)
+plt.title("K-means 聚类结果")
+plt.legend()
+plt.show()
+```
+
+### 3.3 采用核函数
+
+普通 K-means 本质上使用欧氏距离，更擅长处理近似球形簇。对于环形、月牙形等复杂结构，普通 K-means 可能失败。
+
+“核 K-means”通过核函数隐式映射到更高维空间后再聚类，可以处理更复杂边界，但计算更复杂。在实际入门项目中，也可以考虑：
+
+- 谱聚类（Spectral Clustering）。
+- DBSCAN（能发现非规则形状簇，并识别噪声点）。
+- 高斯混合模型（GMM）。
+
+### 3.4 K-means++
+
+随机初始化中心点可能导致差的局部结果。K-means++ 会更分散地选择初始中心，通常让结果更稳定。
+
+在 `scikit-learn` 中，`KMeans` 默认使用的初始化方式通常就是 `k-means++`，你也可以显式指定：
+
+```python
+KMeans(n_clusters=4, init="k-means++", n_init=10, random_state=42)
+```
+
+### 3.5 ISODATA
+
+ISODATA（Iterative Self-Organizing Data Analysis Technique）是 K-means 的扩展思想。它不仅反复更新中心，还可能根据规则：
+
+- 对过大的簇进行拆分。
+- 合并距离很近的簇。
+- 删除样本过少的簇。
+
+它适合“事先不完全确定应该分几组”的场景，但实现与参数更复杂。在入门阶段，先掌握“肘部法 + 轮廓系数 + 业务解释”选择 K 的方法更实用。
+
+---

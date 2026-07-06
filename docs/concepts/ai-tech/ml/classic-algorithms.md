@@ -16,16 +16,3 @@
 | 10 | XGBoost | 分类 / 回归 / 排序 | 梯度提升树、正则化 |
 
 ---
-
-## 算法分篇
-
-1. [K 近邻算法](/concepts/ai-tech/ml/knn)
-2. [线性回归（Linear Regression）](/concepts/ai-tech/ml/linear-regression)
-3. [逻辑回归（Logistic Regression）](/concepts/ai-tech/ml/logistic-regression)
-4. [决策树（Decision Tree）](/concepts/ai-tech/ml/decision-tree)
-5. [支持向量机](/concepts/ai-tech/ml/support-vector-machine)
-6. [随机森林分类模型详解](/concepts/ai-tech/ml/random-forest)
-7. [朴素贝叶斯](/concepts/ai-tech/ml/naive-bayes)
-8. [K-means【机器学习】](/concepts/ai-tech/ml/k-means)
-9. [主成分分析（PCA）](/concepts/ai-tech/ml/pca)
-10. [XGBoost模型详解](/concepts/ai-tech/ml/xgboost)

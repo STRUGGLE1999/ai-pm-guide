@@ -1,4 +1,4 @@
-# XGBoost模型详解
+# XGBoost 模型详解
 
 XGBoost 是一种高效的梯度提升树实现，常用于结构化表格数据的分类、回归和排序任务。
 
@@ -8,12 +8,12 @@ XGBoost 不是一次训练一棵完美的树，而是按顺序训练许多棵较
 
 ```mermaid
 flowchart LR
-A[初始预测] --> B[树 1：学习主要规律]
-B --> C[残差 / 错误]
-C --> D[树 2：修正剩余错误]
-D --> E[残差 / 错误]
-E --> F[树 3：继续修正]
-F --> G[多棵树加权求和]
+A["初始预测"] --> B["树 1：学习主要规律"]
+B --> C["残差 / 错误"]
+C --> D["树 2：修正剩余错误"]
+D --> E["残差 / 错误"]
+E --> F["树 3：继续修正"]
+F --> G["多棵树加权求和"]
 ```
 
 最终预测可以概念化为：
@@ -86,3 +86,49 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, roc_auc_score
 from xgboost import XGBClassifier
+
+# 1. 数据
+cancer = load_breast_cancer()
+X_train, X_test, y_train, y_test = train_test_split(
+    cancer.data,
+    cancer.target,
+    test_size=0.25,
+    random_state=42,
+    stratify=cancer.target
+)
+
+# 2. 模型
+xgb_model = XGBClassifier(
+    objective="binary:logistic",
+    n_estimators=300,
+    max_depth=4,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    reg_lambda=1.0,
+    eval_metric="logloss",
+    random_state=42,
+    n_jobs=-1
+)
+
+# 3. 训练
+xgb_model.fit(X_train, y_train)
+
+# 4. 评估
+y_pred = xgb_model.predict(X_test)
+y_prob = xgb_model.predict_proba(X_test)[:, 1]
+
+print(classification_report(y_test, y_pred))
+print("ROC-AUC：", roc_auc_score(y_test, y_prob))
+```
+
+## 如何避免 XGBoost 过拟合？
+
+- 不要一开始就把 `max_depth` 设得很大。
+- 降低 `learning_rate`，配合更多树。
+- 设置 `subsample` 与 `colsample_bytree` 小于 1。
+- 使用验证集和早停（Early Stopping）。
+- 不要反复在测试集上调参。
+- 先建立逻辑回归、随机森林等基线，确认 XGBoost 的提升是否值得。
+
+---

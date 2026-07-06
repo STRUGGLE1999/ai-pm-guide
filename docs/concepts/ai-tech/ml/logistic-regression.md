@@ -97,3 +97,30 @@ plt.show()
 ### 5、可视化决策边界
 
 ```python
+# 使用流水线中的标准化器与模型，在标准化空间绘制边界
+scaler = logit_pipeline.named_steps["scaler"]
+model = logit_pipeline.named_steps["model"]
+X_train_scaled = scaler.transform(X_train)
+
+x_min, x_max = X_train_scaled[:, 0].min() - 1, X_train_scaled[:, 0].max() + 1
+y_min, y_max = X_train_scaled[:, 1].min() - 1, X_train_scaled[:, 1].max() + 1
+xx, yy = np.meshgrid(
+    np.linspace(x_min, x_max, 300),
+    np.linspace(y_min, y_max, 300)
+)
+
+Z = model.predict(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
+
+plt.contourf(xx, yy, Z, alpha=0.25, cmap="coolwarm")
+plt.scatter(X_train_scaled[:, 0], X_train_scaled[:, 1], c=y_train, edgecolor="k", cmap="coolwarm")
+plt.xlabel("标准化后的特征 1")
+plt.ylabel("标准化后的特征 2")
+plt.title("逻辑回归决策边界")
+plt.show()
+```
+
+## 总结
+
+逻辑回归是非常重要的基线模型：速度快、可解释、能输出概率。在很多二分类问题上，它应当是你最先尝试的模型之一。
+
+---
