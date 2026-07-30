@@ -1,103 +1,99 @@
 # 3.1 循环神经网络（RNN）
 
-RNN 是一种按顺序处理数据的神经网络，适合早期文本、语音、时间序列任务。它会把前面的信息传到后面，帮助模型理解序列。
+### 3.1.1 为什么需要序列模型？
 
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/02-flowchart-llm-call-chain.png" alt="大语言模型调用链路">
-  <figcaption>NLP 能力最终会进入输入、上下文、模型、输出和后处理链路。</figcaption>
-</figure>
+下面两句包含相同的词，但语义不同：
 
-## RNN 解决什么
-
-普通神经网络很难直接处理“顺序”。RNN 让模型在读一句话时保留前文状态，例如读到“我昨天买的手机，今天它坏了”，模型需要知道“它”指手机。
-
-## 局限
-
-RNN 在长文本上容易遗忘前面的信息，训练也不容易并行。LSTM、GRU 改善了这个问题，但仍然难以支撑今天大模型的长上下文需求。
-
-## 为什么仍需了解
-
-RNN 帮你理解“序列建模”这件事：语音、文本、用户行为、时间序列都不是孤立点。即使今天主流架构是 Transformer，很多业务数据仍然需要考虑顺序和上下文。
-
-## 工程实践要点
-
-NLP 不是一个单独功能名，而是一组文本处理能力。技术方案里需要把“理解文本”拆清楚：是分类、抽取、匹配、检索、摘要、改写、翻译，还是多轮对话。不同任务的数据、指标和风险完全不同。
-
-| 任务 | 输入输出 | 关键验收 |
-| --- | --- | --- |
-| 分类 | 文本 -> 类别。 | Precision、Recall、类别边界。 |
-| 抽取 | 文本 -> 字段。 | 字段准确率、缺失率、证据位置。 |
-| 相似度 | 文本 -> 相似候选。 | 召回率、TopK 命中、误匹配。 |
-| 生成 | 文本/资料 -> 新文本。 | 事实一致性、格式、引用和安全。 |
-
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/03-flowchart-rag-pipeline.png" alt="RAG 检索增强链路">
-  <figcaption>文本理解、相似度和抽取能力经常会成为知识库问答的基础组件。</figcaption>
-</figure>
-
-## 示例代码
-
-下面用 Python 做一个最小文本预处理和词频统计：
-
-```python
-import re
-from collections import Counter
-
-text = "RAG uses retrieval, reranking, and generation. Retrieval quality matters."
-tokens = re.findall(r"[a-zA-Z]+", text.lower())
-counts = Counter(tokens)
-
-print(tokens)
-print(counts.most_common(5))
+```text
+“我喜欢你”
+“你喜欢我”
 ```
 
-传统 NLP 和大模型应用都离不开文本清洗、切分、表示和评估。先用简单代码看清输入，再接复杂模型。
-<!-- ai-tech-real-v1 -->
+普通全连接网络擅长固定长度特征，但不会天然理解词序。RNN（Recurrent Neural Network）的核心思想是：**按顺序读取 token，并维护一个不断更新的隐状态（记忆）。**
 
-## 技术细节拆解
+```mermaid
+flowchart LR
+    X1[x1：我] --> H1[h1]
+    H1 --> H2[h2]
+    X2[x2：喜欢] --> H2
+    H2 --> H3[h3]
+    X3[x3：NLP] --> H3
+    H3 --> Y[分类或下一个词预测]
+```
 
-3.1 循环神经网络（RNN） 可以拆成输入、处理、输出和指标四层。这样读的时候不会停留在概念名，而是能看到它在系统里接收什么、改变什么、产出什么。
+### 3.1.2 RNN 基本公式
 
-| 层次 | 具体内容 |
-| --- | --- |
-| 输入 | Tensor、Dataset、DataLoader、模型配置和训练参数。 |
-| 处理 | 前向计算、loss 计算、反向传播、优化器更新、验证。 |
-| 输出 | 模型权重、训练日志、指标曲线、导出模型。 |
-| 指标 | loss、验证集指标、训练耗时、显存占用、吞吐。 |
+在第 $t$ 个时间步：
 
-## 关键参数和边界
+$$
+h_t=\tanh(W_{xh}x_t+W_{hh}h_{t-1}+b_h)
+$$
 
-| 参数/边界 | 说明 |
-| --- | --- |
-| shape | 张量形状必须匹配模型输入，图片通道顺序和 batch 维度最容易错。 |
-| dtype | float32、float16、int64 会影响计算和 loss。 |
-| device | CPU/GPU 混用会直接报错，数据和模型要在同一设备。 |
-| batch size | 影响训练稳定性、速度和显存。 |
+$$
+y_t=W_{hy}h_t+b_y
+$$
 
-## 可运行检查
+| 符号 | 含义 |
+|---|---|
+| $x_t$ | 当前 token 的向量 |
+| $h_{t-1}$ | 已读前文的隐藏状态 |
+| $h_t$ | 读完当前 token 后的新状态 |
+| $y_t$ | 当前输出，可用于分类或预测 |
+
+### 3.1.3 RNN 的难点：长距离依赖与梯度消失
+
+```text
+“我在很多年前去过……（中间几十个词）……北京。”
+```
+
+当模型读到“北京”时，早期的“去过”可能在多次状态传递中逐渐衰减。反向传播时梯度也可能越来越小，这就是梯度消失；也可能越来越大，形成梯度爆炸。
+
+### 3.1.4 LSTM 与 GRU：用门控管理记忆
+
+| 模型 | 思想 | 优点 | 代价 |
+|---|---|---|---|
+| Vanilla RNN | 单一递归状态 | 易理解 | 长序列记忆弱 |
+| LSTM | 输入门、遗忘门、输出门 | 能更好保留长期信息 | 参数较多 |
+| GRU | 更新门、重置门 | 比 LSTM 更简洁 | 表达与 LSTM 略有差异 |
+
+可以把门理解成笔记本：
+
+- 遗忘门：旧笔记中哪些该擦掉；
+- 输入门：当前信息中哪些值得记下；
+- 输出门：此刻该拿出哪些记忆来回答。
+
+### 3.1.5 PyTorch：极简双向 GRU 分类器
 
 ```python
 import torch
+import torch.nn as nn
 
-x = torch.randn(8, 3, 224, 224)
-print("shape", x.shape)
-print("dtype", x.dtype)
-print("device", x.device)
-print("min/max", float(x.min()), float(x.max()))
+class GRUTextClassifier(nn.Module):
+    def __init__(self, vocab_size: int, embed_dim: int, hidden_dim: int, num_classes: int):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        self.gru = nn.GRU(
+            input_size=embed_dim,
+            hidden_size=hidden_dim,
+            batch_first=True,
+            bidirectional=True
+        )
+        self.classifier = nn.Linear(hidden_dim * 2, num_classes)
+
+    def forward(self, input_ids):
+        # input_ids: [batch_size, seq_len]
+        x = self.embedding(input_ids)
+        _, hidden = self.gru(x)
+
+        # 双向 GRU 的最后两个 hidden 分别来自正向与反向
+        sentence_vector = torch.cat([hidden[-2], hidden[-1]], dim=1)
+        return self.classifier(sentence_vector)
+
+model = GRUTextClassifier(vocab_size=5000, embed_dim=128, hidden_dim=128, num_classes=2)
+dummy_input = torch.randint(1, 5000, (4, 20))
+print(model(dummy_input).shape)  # torch.Size([4, 2])
 ```
 
-## 怎么判断学懂了
+### 3.1.6 RNN 还值得学吗？
 
-| 判断点 | 具体标准 |
-| --- | --- |
-| 小样本过拟合 | 先确认模型能在很小数据上过拟合，排除链路错误。 |
-| 训练曲线 | 同时看训练集和验证集曲线，判断欠拟合或过拟合。 |
-| 导出一致性 | 导出模型前后用同一输入比较输出。 |
-
-## 常见误区和排查
-
-| 问题 | 为什么会发生 | 怎么排查 |
-| --- | --- | --- |
-| 训练不收敛 | 学习率、数据标准化、loss 或标签类型不匹配。 | 先让模型在小样本上过拟合。 |
-| 设备不一致 | 模型在 GPU，输入还在 CPU。 | 打印 tensor.device，统一 `.to(device)`。 |
-| 导出后结果不同 | 训练预处理和推理预处理不一致。 | 保存预处理配置，并用同一输入对比输出。 |
+值得学，但不必把它当作现代 NLP 的默认首选。它帮助你理解序列、隐状态、长依赖和门控，也仍适用于部分轻量模型、语音与时间序列任务。多数通用 NLP 场景中，Transformer 已更常见。

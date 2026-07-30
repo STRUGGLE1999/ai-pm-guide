@@ -1,111 +1,101 @@
 # 2.4 NLP 文本相似度计算
 
-文本相似度用于判断两段文本是否表达相近含义。它是知识库检索、相似问题合并、重复反馈归并、推荐和问答匹配的基础能力。
+### 2.4.1 相似度能解决什么？
 
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/02-flowchart-llm-call-chain.png" alt="大语言模型调用链路">
-  <figcaption>NLP 能力最终会进入输入、上下文、模型、输出和后处理链路。</figcaption>
-</figure>
+| 场景 | 问题 |
+|---|---|
+| FAQ 检索 | “怎么退款？”和“退款流程是什么？”是否相近？ |
+| 重复工单 | 两个用户是不是在描述同一问题？ |
+| 语义搜索 | “续航差”能否找到“电池不耐用”？ |
+| 内容推荐 | 用户看过的内容与候选内容是否接近？ |
+| 聚类 | 哪些评论可以归成同一主题？ |
 
-## 两种相似
+### 2.4.2 三层相似度方法
 
-| 类型 | 例子 | 方法 |
-| --- | --- | --- |
-| 字面相似 | “退款流程”和“退款流程说明”。 | 关键词、编辑距离、BM25。 |
-| 语义相似 | “怎么退钱”和“订单取消后款项多久到账”。 | Embedding、向量检索、语义模型。 |
+| 层次 | 方法 | 能理解什么 | 局限 |
+|---|---|---|---|
+| 字面相似 | 编辑距离、Jaccard、关键词重合 | 字符、词是否相同 | 同义词无能为力 |
+| 统计相似 | TF-IDF + 余弦 | 关键词权重 | 语义与上下文弱 |
+| 语义相似 | Sentence Embedding / Cross-Encoder | 同义、改写、隐含表达 | 需要评估与算力 |
 
-## 应用场景
+### 2.4.3 余弦相似度
 
-- 客服问题去重。
-- FAQ 自动匹配。
-- 知识库 RAG 召回。
-- 用户反馈聚类。
-- 相似商品和相似内容推荐。
+$$
+\cos(a,b)=\frac{a\cdot b}{\|a\|\|b\|}
+$$
 
-## 常见坑
+直觉：比较两个向量的方向是否一致。接近 1 表示更相似，接近 0 表示关联弱。实际阈值不能凭感觉设定，需要在你的验证集上寻找 Precision/Recall 可接受的平衡点。
 
-相似不等于正确。两个问题看起来相似，但适用条件可能不同。比如“个人报销上限”和“部门团建报销上限”都和报销有关，但答案不能混用。
-
-所以相似度结果要结合元数据、权限、时间、业务条件和重排。
-
-## 工程实践要点
-
-NLP 不是一个单独功能名，而是一组文本处理能力。技术方案里需要把“理解文本”拆清楚：是分类、抽取、匹配、检索、摘要、改写、翻译，还是多轮对话。不同任务的数据、指标和风险完全不同。
-
-| 任务 | 输入输出 | 关键验收 |
-| --- | --- | --- |
-| 分类 | 文本 -> 类别。 | Precision、Recall、类别边界。 |
-| 抽取 | 文本 -> 字段。 | 字段准确率、缺失率、证据位置。 |
-| 相似度 | 文本 -> 相似候选。 | 召回率、TopK 命中、误匹配。 |
-| 生成 | 文本/资料 -> 新文本。 | 事实一致性、格式、引用和安全。 |
-
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/03-flowchart-rag-pipeline.png" alt="RAG 检索增强链路">
-  <figcaption>文本理解、相似度和抽取能力经常会成为知识库问答的基础组件。</figcaption>
-</figure>
-
-## 示例代码
-
-下面用 Python 做一个最小文本预处理和词频统计：
+### 2.4.4 TF-IDF + 余弦相似度示例
 
 ```python
-import re
-from collections import Counter
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-text = "RAG uses retrieval, reranking, and generation. Retrieval quality matters."
-tokens = re.findall(r"[a-zA-Z]+", text.lower())
-counts = Counter(tokens)
+sentences = [
+    "如何申请退款", "退款流程是什么",
+    "手机电池不耐用", "续航时间太短怎么办"
+]
 
-print(tokens)
-print(counts.most_common(5))
+# 字符 n-gram 不依赖中文分词，适合入门演示
+vectorizer = TfidfVectorizer(analyzer="char", ngram_range=(2, 4))
+X = vectorizer.fit_transform(sentences)
+sim = cosine_similarity(X)
+
+for i, text in enumerate(sentences):
+    print(f"\n{text}")
+    for j, score in enumerate(sim[i]):
+        if i != j:
+            print(f"  与「{sentences[j]}」的相似度：{score:.3f}")
 ```
 
-传统 NLP 和大模型应用都离不开文本清洗、切分、表示和评估。先用简单代码看清输入，再接复杂模型。
-<!-- ai-tech-real-v1 -->
+### 2.4.5 句向量：让整句话成为语义 Embedding
 
-## 技术细节拆解
-
-2.4 NLP 文本相似度计算 可以拆成输入、处理、输出和指标四层。这样读的时候不会停留在概念名，而是能看到它在系统里接收什么、改变什么、产出什么。
-
-| 层次 | 具体内容 |
-| --- | --- |
-| 输入 | 原始文本、文档段落、OCR 结果、聊天记录、HTML 或日志。 |
-| 处理 | 清洗、分句、切分、Tokenization、表示、分类/抽取/匹配。 |
-| 输出 | 类别、实体、关系、摘要、相似度、检索片段或生成文本。 |
-| 指标 | 精确率、召回率、F1、引用命中率、人工一致性。 |
-
-## 关键参数和边界
-
-| 参数/边界 | 说明 |
-| --- | --- |
-| 切分粒度 | 过短会丢上下文，过长会引入噪声并增加成本。 |
-| 保留结构 | 标题、表格、列表、页码和说话人经常是重要语义。 |
-| 实体边界 | 要定义清楚什么算实体，别名、缩写、编号都要处理。 |
-| 脱敏规则 | 脱敏不能破坏关键字段，否则会影响抽取和匹配。 |
-
-## 可运行检查
+```bash
+pip install -U sentence-transformers
+```
 
 ```python
-import re
+from sentence_transformers import SentenceTransformer, util
 
-text = "张三在 2026-06-25 提交了合同，金额为 12000 元。"
-dates = re.findall(r"\d{4}-\d{2}-\d{2}", text)
-amounts = re.findall(r"\d+(?:\.\d+)?\s*元", text)
-print({"dates": dates, "amounts": amounts})
+# 首次运行会下载模型；生产环境应固定并缓存模型版本
+model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+
+queries = ["如何申请退款", "手机电池不耐用"]
+candidates = [
+    "退款流程是什么", "我要退货，应该怎么操作",
+    "续航时间太短怎么办", "屏幕颜色不够鲜艳"
+]
+
+q_emb = model.encode(queries, convert_to_tensor=True, normalize_embeddings=True)
+c_emb = model.encode(candidates, convert_to_tensor=True, normalize_embeddings=True)
+scores = util.cos_sim(q_emb, c_emb)
+
+for i, query in enumerate(queries):
+    print(f"\n查询：{query}")
+    for idx in scores[i].argsort(descending=True):
+        print(candidates[int(idx)], "->", round(float(scores[i][idx]), 3))
 ```
 
-## 怎么判断学懂了
+### 2.4.6 Bi-Encoder 与 Cross-Encoder
 
-| 判断点 | 具体标准 |
-| --- | --- |
-| 样本抽查 | 每次改清洗或切分规则后抽查原文、片段和输出。 |
-| 长文本表现 | 单独评估长文档、表格、附件和 OCR 噪声。 |
-| 证据链 | 抽取或生成结果要能追溯到原文位置。 |
+```mermaid
+flowchart LR
+    A[用户问题] --> B[Bi-Encoder：快速召回 Top-K]
+    B --> C[候选文档]
+    C --> D[Cross-Encoder：问题与文档一起精排]
+    D --> E[最终排序]
+```
 
-## 常见误区和排查
+| 模型 | 特点 | 常见位置 |
+|---|---|---|
+| Bi-Encoder | 文档可预先编码，搜索快 | 大规模召回 |
+| Cross-Encoder | 逐对深度比较，精度高但慢 | Top-K 重排序 |
 
-| 问题 | 为什么会发生 | 怎么排查 |
-| --- | --- | --- |
-| 切分破坏语义 | 长文档被切断，答案证据分散。 | 抽查原文和 chunk，调整重叠窗口。 |
-| 实体边界不一致 | 标注人对组织、区域、产品型号口径不同。 | 先写实体定义和反例。 |
-| 清洗过度 | 标题、表格、编号被删除。 | 保留结构化元素并在解析后抽样检查。 |
+### 2.4.7 相似度项目的常见误区
+
+- 相似度高不等于“问题答案正确”；
+- 用通用模型却不在本业务语料上验证；
+- 不设置拒答或转人工阈值；
+- 忽略同名不同义、否定表达与时效性；
+- 只看平均相似度，不看 Top-K 是否召回正确结果。

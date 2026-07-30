@@ -1,113 +1,115 @@
 # 1.3 文本分类
 
-文本分类是把一段文本分到某个类别里。它是很多 AI 系统的入口能力：先判断用户意图、风险等级、主题类型，再决定后续走哪个流程。
+### 1.3.1 文本分类解决什么问题？
 
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/02-flowchart-llm-call-chain.png" alt="大语言模型调用链路">
-  <figcaption>NLP 能力最终会进入输入、上下文、模型、输出和后处理链路。</figcaption>
-</figure>
+文本分类是为文本分配一个或多个预定义标签。
 
-## 常见场景
+| 输入 | 分类任务 | 输出 |
+|---|---|---|
+| “快递三天还没到” | 工单路由 | 物流问题 |
+| “这部电影太精彩了” | 情感分类 | 正面 |
+| “限时领免费提现额度” | 风险识别 | 营销/诈骗风险 |
+| 一篇新闻 | 主题分类 | 体育/财经/科技 |
 
-| 场景 | 分类目标 | 后续动作 |
-| --- | --- | --- |
-| 智能客服 | 售前、售后、退款、投诉。 | 路由到知识库或人工。 |
-| 内容审核 | 正常、低俗、涉政、广告。 | 放行、拦截、复核。 |
-| 工单分派 | 技术、财务、运营、法务。 | 派给对应团队。 |
-| 舆情分析 | 正面、中性、负面。 | 预警和分析。 |
+### 1.3.2 二分类、多分类与多标签
 
-## 指标怎么选
+| 类型 | 每条文本的标签数 | 例子 | 典型输出 |
+|---|---:|---|---|
+| 二分类 | 1 个，二选一 | 垃圾/正常 | Sigmoid |
+| 多分类 | 1 个，N 选 1 | 体育/财经/科技 | Softmax |
+| 多标签 | 0 至多个 | 文章同时属于 AI、产品、创业 | 多个 Sigmoid |
 
-文本分类不能只看 Accuracy。高风险审核更怕漏判，Recall 更重要；自动拦截更怕误伤，Precision 更重要。多类别任务还要看每个类别的样本量和混淆矩阵。
+### 1.3.3 全流程：先定义标签，再训练模型
 
-## 系统设计要点
-
-- 类别定义要互斥且清楚。
-- 要有“其他/不确定”出口。
-- 新类别出现时要能收集样本。
-- 高风险类别要人工复核。
-- 分类结果最好带置信度和原因。
-
-文本分类适合做稳定入口，但不适合承诺“所有复杂语义都能一次判断对”。边界案例要允许追问或转人工。
-
-## 工程实践要点
-
-NLP 不是一个单独功能名，而是一组文本处理能力。技术方案里需要把“理解文本”拆清楚：是分类、抽取、匹配、检索、摘要、改写、翻译，还是多轮对话。不同任务的数据、指标和风险完全不同。
-
-| 任务 | 输入输出 | 关键验收 |
-| --- | --- | --- |
-| 分类 | 文本 -> 类别。 | Precision、Recall、类别边界。 |
-| 抽取 | 文本 -> 字段。 | 字段准确率、缺失率、证据位置。 |
-| 相似度 | 文本 -> 相似候选。 | 召回率、TopK 命中、误匹配。 |
-| 生成 | 文本/资料 -> 新文本。 | 事实一致性、格式、引用和安全。 |
-
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/03-flowchart-rag-pipeline.png" alt="RAG 检索增强链路">
-  <figcaption>文本理解、相似度和抽取能力经常会成为知识库问答的基础组件。</figcaption>
-</figure>
-
-## 示例代码
-
-下面用 Python 做一个最小文本预处理和词频统计：
-
-```python
-import re
-from collections import Counter
-
-text = "RAG uses retrieval, reranking, and generation. Retrieval quality matters."
-tokens = re.findall(r"[a-zA-Z]+", text.lower())
-counts = Counter(tokens)
-
-print(tokens)
-print(counts.most_common(5))
+```mermaid
+flowchart TD
+    A[明确业务目标] --> B[定义标签与边界]
+    B --> C[收集并标注数据]
+    C --> D[训练/验证/测试切分]
+    D --> E[基线模型：TF-IDF + 线性分类器]
+    E --> F[错误分析]
+    F --> G[优化数据、阈值与模型]
+    G --> H[上线监控与反馈回流]
 ```
 
-传统 NLP 和大模型应用都离不开文本清洗、切分、表示和评估。先用简单代码看清输入，再接复杂模型。
-<!-- ai-tech-real-v1 -->
+标签定义要写清楚“包含什么、不包含什么、边界案例怎么判”。例如：
 
-## 技术细节拆解
-
-1.3 文本分类 可以拆成输入、处理、输出和指标四层。这样读的时候不会停留在概念名，而是能看到它在系统里接收什么、改变什么、产出什么。
-
-| 层次 | 具体内容 |
-| --- | --- |
-| 输入 | 原始文本、文档段落、OCR 结果、聊天记录、HTML 或日志。 |
-| 处理 | 清洗、分句、切分、Tokenization、表示、分类/抽取/匹配。 |
-| 输出 | 类别、实体、关系、摘要、相似度、检索片段或生成文本。 |
-| 指标 | 精确率、召回率、F1、引用命中率、人工一致性。 |
-
-## 关键参数和边界
-
-| 参数/边界 | 说明 |
-| --- | --- |
-| 切分粒度 | 过短会丢上下文，过长会引入噪声并增加成本。 |
-| 保留结构 | 标题、表格、列表、页码和说话人经常是重要语义。 |
-| 实体边界 | 要定义清楚什么算实体，别名、缩写、编号都要处理。 |
-| 脱敏规则 | 脱敏不能破坏关键字段，否则会影响抽取和匹配。 |
-
-## 可运行检查
-
-```python
-import re
-
-text = "张三在 2026-06-25 提交了合同，金额为 12000 元。"
-dates = re.findall(r"\d{4}-\d{2}-\d{2}", text)
-amounts = re.findall(r"\d+(?:\.\d+)?\s*元", text)
-print({"dates": dates, "amounts": amounts})
+```markdown
+标签：退款进度
+定义：用户询问退款是否到账、退款需要多久、退款状态。
+包含：退款什么时候到账？为什么退款还没到？
+不包含：如何申请退款？（归为“退款申请”）
 ```
 
-## 怎么判断学懂了
+### 1.3.4 可运行示例：TF-IDF + 逻辑回归
 
-| 判断点 | 具体标准 |
-| --- | --- |
-| 样本抽查 | 每次改清洗或切分规则后抽查原文、片段和输出。 |
-| 长文本表现 | 单独评估长文档、表格、附件和 OCR 噪声。 |
-| 证据链 | 抽取或生成结果要能追溯到原文位置。 |
+```bash
+pip install scikit-learn jieba
+```
 
-## 常见误区和排查
+```python
+import jieba
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
 
-| 问题 | 为什么会发生 | 怎么排查 |
-| --- | --- | --- |
-| 切分破坏语义 | 长文档被切断，答案证据分散。 | 抽查原文和 chunk，调整重叠窗口。 |
-| 实体边界不一致 | 标注人对组织、区域、产品型号口径不同。 | 先写实体定义和反例。 |
-| 清洗过度 | 标题、表格、编号被删除。 | 保留结构化元素并在解析后抽样检查。 |
+texts = [
+    "手机续航非常好，值得购买", "客服回复很慢，体验太差了",
+    "屏幕清晰，系统运行流畅", "用了两天就死机，不推荐",
+    "价格合理，物流也很快", "包装破损，产品还有划痕",
+    "音质很好，降噪效果明显", "退货流程麻烦，客服态度不好",
+    "做工精致，性价比高", "发热严重，电池掉电很快"
+]
+labels = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]  # 1=正面，0=负面
+
+def cut_words(text: str) -> str:
+    return " ".join(jieba.lcut(text))
+
+X = [cut_words(t) for t in texts]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, labels, test_size=0.3, random_state=42, stratify=labels
+)
+
+model = Pipeline([
+    ("tfidf", TfidfVectorizer(ngram_range=(1, 2))),
+    ("clf", LogisticRegression(max_iter=1000))
+])
+model.fit(X_train, y_train)
+pred = model.predict(X_test)
+
+print(classification_report(y_test, pred, target_names=["负面", "正面"]))
+print(confusion_matrix(y_test, pred))
+print(model.predict([cut_words("外观漂亮，使用起来很顺手")]))
+```
+
+### 1.3.5 为什么不能只看准确率？
+
+若 95% 的短信都是正常短信，一个“永远预测正常”的模型准确率也有 95%，但毫无业务价值。
+
+$$
+\mathrm{Precision}=\frac{TP}{TP+FP},\quad
+\mathrm{Recall}=\frac{TP}{TP+FN}
+$$
+
+$$
+F1=2\times\frac{\mathrm{Precision}\times\mathrm{Recall}}{\mathrm{Precision}+\mathrm{Recall}}
+$$
+
+| 指标 | 回答的问题 | 适用 |
+|---|---|---|
+| Accuracy | 总体预测对了多少？ | 类别均衡 |
+| Precision | 预测为正的，多少真的为正？ | 错杀成本高 |
+| Recall | 真实正例中抓到了多少？ | 漏检成本高 |
+| F1 | 精确率与召回率的平衡 | 不均衡分类常用 |
+| Macro-F1 | 每个类别平等计分 | 长尾多分类 |
+
+### 1.3.6 文本分类的高频失败原因
+
+- 标签边界不清；
+- 训练文本与线上文本风格差异过大；
+- 类别严重不均衡；
+- 同一模板或同一用户文本同时落入训练集和测试集；
+- 只扩大模型，不看错例；
+- 忽略置信度与阈值，0.51 和 0.99 被同等对待。

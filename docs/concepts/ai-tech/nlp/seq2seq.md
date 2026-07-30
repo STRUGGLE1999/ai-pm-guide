@@ -1,113 +1,81 @@
 # 3.4 序列到序列模型
 
-Seq2Seq 是把一个序列转换成另一个序列的模型思路。机器翻译、摘要、改写、语音识别、问题生成，都可以看成输入序列到输出序列。
+### 3.4.1 什么是 Seq2Seq？
 
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/02-flowchart-llm-call-chain.png" alt="大语言模型调用链路">
-  <figcaption>NLP 能力最终会进入输入、上下文、模型、输出和后处理链路。</figcaption>
-</figure>
+序列到序列（Sequence-to-Sequence，Seq2Seq）是“输入一个序列，输出另一个序列”。
 
-## 典型任务
+| 任务 | 输入 | 输出 |
+|---|---|---|
+| 翻译 | 中文句子 | 英文句子 |
+| 摘要 | 长文章 | 短摘要 |
+| 问答 | 问题+文档 | 答案 |
+| 改写 | 原句 | 更正式/更简洁的句子 |
+| 对话 | 用户消息 | 助手回复 |
 
-| 输入 | 输出 | 场景 |
-| --- | --- | --- |
-| 英文句子 | 中文句子 | 翻译。 |
-| 长文章 | 短摘要 | 摘要。 |
-| 语音特征 | 文本 | ASR。 |
-| 用户问题 | 标准 SQL | 数据问答。 |
-| 文档 | 结构化字段 | 信息抽取。 |
+### 3.4.2 经典 Encoder–Decoder
 
-## 系统设计要点
-
-Seq2Seq 任务通常要强调输出格式。摘要要有结构，翻译要保留术语，抽取要返回字段，SQL 要能执行。开放输出越多，越需要后处理和校验。
-
-## 常见坑
-
-- 只评估语言流畅，不评估事实保真。
-- 摘要漏掉关键约束。
-- 翻译术语不统一。
-- 结构化输出无法被系统解析。
-
-对读者来说，Seq2Seq 的关键不是模型名，而是输入、输出、约束和验收标准是否清楚。
-
-## 工程实践要点
-
-NLP 不是一个单独功能名，而是一组文本处理能力。技术方案里需要把“理解文本”拆清楚：是分类、抽取、匹配、检索、摘要、改写、翻译，还是多轮对话。不同任务的数据、指标和风险完全不同。
-
-| 任务 | 输入输出 | 关键验收 |
-| --- | --- | --- |
-| 分类 | 文本 -> 类别。 | Precision、Recall、类别边界。 |
-| 抽取 | 文本 -> 字段。 | 字段准确率、缺失率、证据位置。 |
-| 相似度 | 文本 -> 相似候选。 | 召回率、TopK 命中、误匹配。 |
-| 生成 | 文本/资料 -> 新文本。 | 事实一致性、格式、引用和安全。 |
-
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/03-flowchart-rag-pipeline.png" alt="RAG 检索增强链路">
-  <figcaption>文本理解、相似度和抽取能力经常会成为知识库问答的基础组件。</figcaption>
-</figure>
-
-## 示例代码
-
-下面用 Python 做一个最小文本预处理和词频统计：
-
-```python
-import re
-from collections import Counter
-
-text = "RAG uses retrieval, reranking, and generation. Retrieval quality matters."
-tokens = re.findall(r"[a-zA-Z]+", text.lower())
-counts = Counter(tokens)
-
-print(tokens)
-print(counts.most_common(5))
+```mermaid
+flowchart LR
+    A[输入序列 x1...xn] --> B[Encoder]
+    B --> C[上下文表示]
+    C --> D[Decoder]
+    D --> E[输出序列 y1...ym]
 ```
 
-传统 NLP 和大模型应用都离不开文本清洗、切分、表示和评估。先用简单代码看清输入，再接复杂模型。
-<!-- ai-tech-real-v1 -->
+早期 RNN Seq2Seq 把整句压成固定向量，长句容易丢失信息。加入注意力后，Decoder 每生成一个词都能回看输入不同位置，从而减轻这个瓶颈。
 
-## 技术细节拆解
+### 3.4.3 Teacher Forcing：训练与推理的差别
 
-3.4 序列到序列模型 可以拆成输入、处理、输出和指标四层。这样读的时候不会停留在概念名，而是能看到它在系统里接收什么、改变什么、产出什么。
+真实目标：
 
-| 层次 | 具体内容 |
-| --- | --- |
-| 输入 | 原始文本、文档段落、OCR 结果、聊天记录、HTML 或日志。 |
-| 处理 | 清洗、分句、切分、Tokenization、表示、分类/抽取/匹配。 |
-| 输出 | 类别、实体、关系、摘要、相似度、检索片段或生成文本。 |
-| 指标 | 精确率、召回率、F1、引用命中率、人工一致性。 |
-
-## 关键参数和边界
-
-| 参数/边界 | 说明 |
-| --- | --- |
-| 切分粒度 | 过短会丢上下文，过长会引入噪声并增加成本。 |
-| 保留结构 | 标题、表格、列表、页码和说话人经常是重要语义。 |
-| 实体边界 | 要定义清楚什么算实体，别名、缩写、编号都要处理。 |
-| 脱敏规则 | 脱敏不能破坏关键字段，否则会影响抽取和匹配。 |
-
-## 可运行检查
-
-```python
-import re
-
-text = "张三在 2026-06-25 提交了合同，金额为 12000 元。"
-dates = re.findall(r"\d{4}-\d{2}-\d{2}", text)
-amounts = re.findall(r"\d+(?:\.\d+)?\s*元", text)
-print({"dates": dates, "amounts": amounts})
+```text
+我 喜欢 NLP <EOS>
 ```
 
-## 怎么判断学懂了
+训练时，生成第 $t$ 个词会喂入真实的第 $t-1$ 个词；推理时没有真实答案，只能把自己上一步生成结果喂回去。这会产生“训练时总看到正确历史、推理时一个错误可能持续传播”的暴露偏差。
 
-| 判断点 | 具体标准 |
-| --- | --- |
-| 样本抽查 | 每次改清洗或切分规则后抽查原文、片段和输出。 |
-| 长文本表现 | 单独评估长文档、表格、附件和 OCR 噪声。 |
-| 证据链 | 抽取或生成结果要能追溯到原文位置。 |
+### 3.4.4 常见解码策略
 
-## 常见误区和排查
+| 策略 | 方法 | 优点 | 缺点 |
+|---|---|---|---|
+| Greedy Search | 每步取概率最高 token | 最快 | 容易局部最优、重复 |
+| Beam Search | 保留多个候选序列 | 输出更稳 | 更慢，可能过度保守 |
+| Top-k Sampling | 从 Top-k 中采样 | 多样性高 | 可控性较弱 |
+| Top-p Sampling | 从累计概率达到 p 的集合采样 | 更自然 | 参数需调 |
 
-| 问题 | 为什么会发生 | 怎么排查 |
-| --- | --- | --- |
-| 切分破坏语义 | 长文档被切断，答案证据分散。 | 抽查原文和 chunk，调整重叠窗口。 |
-| 实体边界不一致 | 标注人对组织、区域、产品型号口径不同。 | 先写实体定义和反例。 |
-| 清洗过度 | 标题、表格、编号被删除。 | 保留结构化元素并在解析后抽样检查。 |
+### 3.4.5 生成过程伪代码
+
+```python
+# 伪代码：用于理解流程，不能直接训练
+encoder_outputs, encoder_hidden = encoder(source_tokens)
+
+decoder_input = BOS_TOKEN
+decoder_hidden = encoder_hidden
+generated = []
+
+for step in range(max_length):
+    logits, decoder_hidden = decoder(
+        decoder_input,
+        decoder_hidden,
+        encoder_outputs  # 注意力会读取编码器输出
+    )
+    next_token = logits.argmax(dim=-1)
+    generated.append(next_token)
+
+    if next_token == EOS_TOKEN:
+        break
+    decoder_input = next_token
+
+return generated
+```
+
+### 3.4.6 如何评估 Seq2Seq？
+
+| 任务 | 自动指标 | 仍需人工检查 |
+|---|---|---|
+| 翻译 | BLEU、COMET 等 | 术语、遗漏、忠实性 |
+| 摘要 | ROUGE | 是否幻觉、是否覆盖关键事实 |
+| 对话 | 任务成功率、偏好评估 | 有用性、安全性、事实性 |
+| 改写 | 语义相似度、人工评分 | 是否改变原意 |
+
+> 生成任务中，自动指标只能作为参考。医疗、法律、金融和业务规则文本还需要来源引用、规则校验与人工抽检。

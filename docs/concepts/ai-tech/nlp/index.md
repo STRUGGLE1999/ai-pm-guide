@@ -1,107 +1,49 @@
-# NLP 教程导读
+# NLP 从零入门：从文本处理到 Transformer 与预训练模型
 
-NLP 是理解大语言模型之前的重要基础。它把文本任务拆成预处理、表示、分类、抽取、相似度、序列建模和 Transformer 架构。
+> **适合读者**：会一点 Python，了解基础机器学习，但还没有建立 NLP 完整知识体系的学习者。  
+> **完成后你将能够**：解释文本如何变成向量；区分文本分类、NER、关系抽取和语义相似度；理解 RNN、注意力、Transformer、BERT 与 GPT 的关系；搭建若干可运行的 NLP 原型。  
+> **学习原则**：先理解“任务要解决什么、数据是什么、输出怎么评估”，再学习模型和代码。
 
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/02-flowchart-llm-call-chain.png" alt="大语言模型调用链路">
-  <figcaption>NLP 能力最终会进入输入、上下文、模型、输出和后处理链路。</figcaption>
-</figure>
+---
 
-## 建议顺序
+## 第一章 基础概念
 
-1. [1.1 文本预处理](/concepts/ai-tech/nlp/text-preprocessing)
-2. [1.2 文本表示方法](/concepts/ai-tech/nlp/text-representation)
-3. [1.3 文本分类](/concepts/ai-tech/nlp/text-classification)
-4. [1.4 语言学基础](/concepts/ai-tech/nlp/linguistics-basics)
-5. [2.1 情感分析](/concepts/ai-tech/nlp/sentiment-analysis)
-6. [2.2 命名实体识别（NER）](/concepts/ai-tech/nlp/named-entity-recognition)
-7. [2.3 关系抽取](/concepts/ai-tech/nlp/relation-extraction)
-8. [2.4 NLP 文本相似度计算](/concepts/ai-tech/nlp/semantic-similarity)
-9. [3.1 循环神经网络（RNN）](/concepts/ai-tech/nlp/rnn)
-10. [3.2 注意力机制](/concepts/ai-tech/nlp/attention)
-11. [3.3 Transformer 架构](/concepts/ai-tech/nlp/transformer)
-12. [3.4 序列到序列模型](/concepts/ai-tech/nlp/seq2seq)
+## 先建立一张全景图：NLP 到底在做什么？
 
-学完这一组，你会更容易判断文本产品到底是在做分类、抽取、检索、生成，还是多步组合。
+自然语言处理（Natural Language Processing，NLP）的目标，是让计算机把人类语言转成可计算的表示，并完成理解、分类、抽取、检索、生成和对话等任务。
 
-## 工程实践要点
-
-NLP 不是一个单独功能名，而是一组文本处理能力。技术方案里需要把“理解文本”拆清楚：是分类、抽取、匹配、检索、摘要、改写、翻译，还是多轮对话。不同任务的数据、指标和风险完全不同。
-
-| 任务 | 输入输出 | 关键验收 |
-| --- | --- | --- |
-| 分类 | 文本 -> 类别。 | Precision、Recall、类别边界。 |
-| 抽取 | 文本 -> 字段。 | 字段准确率、缺失率、证据位置。 |
-| 相似度 | 文本 -> 相似候选。 | 召回率、TopK 命中、误匹配。 |
-| 生成 | 文本/资料 -> 新文本。 | 事实一致性、格式、引用和安全。 |
-
-<figure class="article-figure">
-  <img src="/concepts/ai-tech/03-flowchart-rag-pipeline.png" alt="RAG 检索增强链路">
-  <figcaption>文本理解、相似度和抽取能力经常会成为知识库问答的基础组件。</figcaption>
-</figure>
-
-## 示例代码
-
-下面用 Python 做一个最小文本预处理和词频统计：
-
-```python
-import re
-from collections import Counter
-
-text = "RAG uses retrieval, reranking, and generation. Retrieval quality matters."
-tokens = re.findall(r"[a-zA-Z]+", text.lower())
-counts = Counter(tokens)
-
-print(tokens)
-print(counts.most_common(5))
+```mermaid
+flowchart LR
+    A[原始文本<br/>“这个手机续航很好，但拍照一般”]
+    --> B[文本处理<br/>清洗、切分、Tokenize]
+    --> C[数值表示<br/>TF-IDF / Embedding]
+    --> D[模型<br/>线性模型 / RNN / Transformer]
+    --> E[任务输出]
+    E --> E1[情感：整体偏正]
+    E --> E2[属性情感：续航正面、拍照负面]
+    E --> E3[实体与关系：手机-具有-续航]
 ```
 
-传统 NLP 和大模型应用都离不开文本清洗、切分、表示和评估。先用简单代码看清输入，再接复杂模型。
-<!-- ai-tech-real-v1 -->
+语言难在“相同字符不一定相同意思、不同表达可能意思相近”。例如：
 
-## 技术细节拆解
+| 语言现象 | 例子 | 造成的挑战 |
+|---|---|---|
+| 多义 | “苹果发布新品”与“苹果很好吃” | 一个词在不同上下文含义不同 |
+| 否定 | “并不是不好用” | 出现负面词不等于整体负面 |
+| 指代 | “小王买了电脑，他很满意” | “他”需要回指前文实体 |
+| 反讽 | “服务真周到，让我等了两小时” | 字面与真实情绪相反 |
+| 领域差异 | 医疗中的“阳性” | 词义随领域改变 |
 
-NLP 教程导读 可以拆成输入、处理、输出和指标四层。这样读的时候不会停留在概念名，而是能看到它在系统里接收什么、改变什么、产出什么。
+> **核心认知**：NLP 不是让模型“认识字”，而是让模型在上下文中学会哪些信息重要、信息之间有什么关系，以及一句话在完成什么语义功能。
 
-| 层次 | 具体内容 |
-| --- | --- |
-| 输入 | 原始文本、文档段落、OCR 结果、聊天记录、HTML 或日志。 |
-| 处理 | 清洗、分句、切分、Tokenization、表示、分类/抽取/匹配。 |
-| 输出 | 类别、实体、关系、摘要、相似度、检索片段或生成文本。 |
-| 指标 | 精确率、召回率、F1、引用命中率、人工一致性。 |
+<figure class="article-figure">
+  <img src="/concepts/ai-tech/nlp/01-nlp-panorama.png" alt="第一章 基础概念插图">
+  <figcaption>NLP 入门先建立全景图：文本处理、数值表示、模型任务和语言现象彼此相连。</figcaption>
+</figure>
 
-## 关键参数和边界
+## 本章菜单
 
-| 参数/边界 | 说明 |
-| --- | --- |
-| 切分粒度 | 过短会丢上下文，过长会引入噪声并增加成本。 |
-| 保留结构 | 标题、表格、列表、页码和说话人经常是重要语义。 |
-| 实体边界 | 要定义清楚什么算实体，别名、缩写、编号都要处理。 |
-| 脱敏规则 | 脱敏不能破坏关键字段，否则会影响抽取和匹配。 |
-
-## 可运行检查
-
-```python
-import re
-
-text = "张三在 2026-06-25 提交了合同，金额为 12000 元。"
-dates = re.findall(r"\d{4}-\d{2}-\d{2}", text)
-amounts = re.findall(r"\d+(?:\.\d+)?\s*元", text)
-print({"dates": dates, "amounts": amounts})
-```
-
-## 怎么判断学懂了
-
-| 判断点 | 具体标准 |
-| --- | --- |
-| 样本抽查 | 每次改清洗或切分规则后抽查原文、片段和输出。 |
-| 长文本表现 | 单独评估长文档、表格、附件和 OCR 噪声。 |
-| 证据链 | 抽取或生成结果要能追溯到原文位置。 |
-
-## 常见误区和排查
-
-| 问题 | 为什么会发生 | 怎么排查 |
-| --- | --- | --- |
-| 切分破坏语义 | 长文档被切断，答案证据分散。 | 抽查原文和 chunk，调整重叠窗口。 |
-| 实体边界不一致 | 标注人对组织、区域、产品型号口径不同。 | 先写实体定义和反例。 |
-| 清洗过度 | 标题、表格、编号被删除。 | 保留结构化元素并在解析后抽样检查。 |
+- [1.1 文本预处理](/concepts/ai-tech/nlp/text-preprocessing)
+- [1.2 文本表示方法](/concepts/ai-tech/nlp/text-representation)
+- [1.3 文本分类](/concepts/ai-tech/nlp/text-classification)
+- [1.4 语言学基础](/concepts/ai-tech/nlp/linguistics-basics)

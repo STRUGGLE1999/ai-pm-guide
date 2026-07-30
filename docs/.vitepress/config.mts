@@ -106,121 +106,22 @@ const aiTechGroups = [
       { text: '1.2 文本表示方法', link: '/concepts/ai-tech/nlp/text-representation' },
       { text: '1.3 文本分类', link: '/concepts/ai-tech/nlp/text-classification' },
       { text: '1.4 语言学基础', link: '/concepts/ai-tech/nlp/linguistics-basics' },
-      { text: '第二章 信息抽取与语义任务', link: '/concepts/ai-tech/nlp/information-extraction-semantics' },
+      { text: '第二章 NLP 常见任务', link: '/concepts/ai-tech/nlp/common-tasks' },
       { text: '2.1 情感分析', link: '/concepts/ai-tech/nlp/sentiment-analysis' },
       { text: '2.2 命名实体识别（NER）', link: '/concepts/ai-tech/nlp/named-entity-recognition' },
       { text: '2.3 关系抽取', link: '/concepts/ai-tech/nlp/relation-extraction' },
       { text: '2.4 NLP 文本相似度计算', link: '/concepts/ai-tech/nlp/semantic-similarity' },
-      { text: '第三章 深度 NLP 模型', link: '/concepts/ai-tech/nlp/deep-nlp-models' },
+      { text: '第三章 NLP 的神经网络基础', link: '/concepts/ai-tech/nlp/neural-network-basics' },
       { text: '3.1 循环神经网络（RNN）', link: '/concepts/ai-tech/nlp/rnn' },
       { text: '3.2 注意力机制', link: '/concepts/ai-tech/nlp/attention' },
       { text: '3.3 Transformer 架构', link: '/concepts/ai-tech/nlp/transformer' },
-      { text: '3.4 序列到序列模型', link: '/concepts/ai-tech/nlp/seq2seq' }
-    ]
-  },
-  {
-    text: 'Deploy 知识库共建',
-    collapsed: true,
-    items: [
-      { text: 'CH1 模型部署基础', link: '/concepts/ai-tech/deployment/model-deployment-basics' },
-      { text: 'CH2 大模型架构详解', link: '/concepts/ai-tech/deployment/llm-architecture' },
-      { text: 'CH3 大模型部署框架解析', link: '/concepts/ai-tech/deployment/deployment-frameworks' },
-      { text: 'CH4 简单的 CUDA', link: '/concepts/ai-tech/deployment/cuda-basics' },
-      { text: 'CH5 用 CUDA 和 Triton 写大模型', link: '/concepts/ai-tech/deployment/cuda-triton-llm' },
-      { text: 'CH6 大模型量化', link: '/concepts/ai-tech/deployment/quantization' },
-      { text: 'CH7 底层加速', link: '/concepts/ai-tech/deployment/inference-acceleration' },
-      { text: 'CH8 系统层面加速', link: '/concepts/ai-tech/deployment/system-acceleration' }
-    ]
-  },
-  {
-    text: 'LLM101n-CN（共建中）',
-    collapsed: true,
-    items: [
-      { text: 'ngram Readme 翻译', link: '/concepts/ai-tech/deep-learning/ngram-readme' },
-      { text: 'ngram Python 核心代码', link: '/concepts/ai-tech/deep-learning/ngram-python-core' },
-      { text: 'ngram C 核心代码解读', link: '/concepts/ai-tech/deep-learning/ngram-c-core' },
-      { text: 'MLP Readme 翻译', link: '/concepts/ai-tech/deep-learning/mlp-readme' },
-      { text: 'micrograd Readme 翻译', link: '/concepts/ai-tech/deep-learning/micrograd-readme' },
-      { text: 'Micrograd Python 核心代码', link: '/concepts/ai-tech/deep-learning/micrograd-python-core' },
-      { text: 'MLP Python 核心代码', link: '/concepts/ai-tech/deep-learning/mlp-python-core' },
-      { text: 'Tensor 与自动微分', link: '/concepts/ai-tech/deep-learning/tensor-autograd' }
-    ]
-  },
-  {
-    text: 'PyTorch 教程',
-    collapsed: true,
-    items: [
-      { text: 'PyTorch 基础', link: '/concepts/ai-tech/frameworks/pytorch-basics' },
-      { text: 'PyTorch 张量（Tensor）', link: '/concepts/ai-tech/frameworks/pytorch-tensor' },
-      { text: 'PyTorch 神经网络基础', link: '/concepts/ai-tech/frameworks/pytorch-neural-network' },
-      { text: 'PyTorch 数据处理与加载', link: '/concepts/ai-tech/frameworks/pytorch-data-loading' },
-      { text: 'PyTorch 线性回归', link: '/concepts/ai-tech/frameworks/pytorch-linear-regression' },
-      { text: 'PyTorch 卷积神经网络', link: '/concepts/ai-tech/frameworks/pytorch-cnn' },
-      { text: 'PyTorch 循环神经网络', link: '/concepts/ai-tech/frameworks/pytorch-rnn' },
-      { text: 'PyTorch 数据转换', link: '/concepts/ai-tech/frameworks/pytorch-data-transforms' },
-      { text: 'Transformer 模型', link: '/concepts/ai-tech/frameworks/transformer-model' },
-      { text: 'PyTorch 构建 Transformer 模型', link: '/concepts/ai-tech/frameworks/pytorch-transformer' },
-      { text: 'PyTorch 模型部署', link: '/concepts/ai-tech/frameworks/pytorch-model-deployment' }
-    ]
-  },
-  {
-    text: 'TensorFlow 教程',
-    collapsed: true,
-    items: [
-      { text: 'TensorFlow 简介', link: '/concepts/ai-tech/frameworks/tensorflow-basics' },
-      { text: 'TensorFlow 核心概念', link: '/concepts/ai-tech/frameworks/tensorflow-core-concepts' },
-      { text: 'TensorFlow 环境搭建', link: '/concepts/ai-tech/frameworks/tensorflow-environment' },
-      { text: 'TensorFlow 张量操作', link: '/concepts/ai-tech/frameworks/tensorflow-tensor-ops' },
-      { text: 'TensorFlow 高级 API - Keras', link: '/concepts/ai-tech/frameworks/keras-api' },
-      { text: 'Keras 第一个神经网络', link: '/concepts/ai-tech/frameworks/keras-first-network' },
-      { text: 'Keras 常用层类型', link: '/concepts/ai-tech/frameworks/keras-common-layers' },
-      { text: 'TensorFlow 数据处理与管道', link: '/concepts/ai-tech/frameworks/tensorflow-data-pipeline' },
-      { text: 'TensorFlow tf.data API', link: '/concepts/ai-tech/frameworks/tensorflow-tfdata-api' },
-      { text: 'TensorFlow 图像数据处理', link: '/concepts/ai-tech/frameworks/tensorflow-image-data' },
-      { text: 'TensorFlow 文本数据处理', link: '/concepts/ai-tech/frameworks/tensorflow-text-data' },
-      { text: 'TensorFlow 模型训练', link: '/concepts/ai-tech/frameworks/tensorflow-model-training' },
-      { text: 'TensorFlow 模型评估与监控', link: '/concepts/ai-tech/frameworks/tensorflow-evaluation-monitoring' }
-    ]
-  },
-  {
-    text: '吴恩达 机器学习笔记',
-    collapsed: true,
-    items: [
-      { text: '监督学习', link: '/concepts/ai-tech/ml/andrew-supervised-learning' },
-      { text: '无监督学习', link: '/concepts/ai-tech/ml/andrew-unsupervised-learning' },
-      { text: '推荐系统', link: '/concepts/ai-tech/ml/andrew-recommender-systems' },
-      { text: '强化学习', link: '/concepts/ai-tech/ml/andrew-reinforcement-learning' },
-      { text: '机器学习技巧和秘诀', link: '/concepts/ai-tech/ml/andrew-ml-tips-secrets' }
-    ]
-  },
-  {
-    text: '吴恩达 DeepLearning.AI 课程系列',
-    collapsed: true,
-    items: [
-      { text: '大语言模型预训练', link: '/concepts/ai-tech/deep-learning/llm-pretraining' },
-      { text: '大语言模型微调', link: '/concepts/ai-tech/deep-learning/llm-finetuning' },
-      { text: '提示词工程', link: '/concepts/ai-tech/deep-learning/prompt-engineering' },
-      { text: '神经网络和深度学习', link: '/concepts/ai-tech/deep-learning/neural-networks' },
-      { text: '改善深层神经网络', link: '/concepts/ai-tech/deep-learning/improving-deep-neural-networks' },
-      { text: '搭建机器学习项目', link: '/concepts/ai-tech/deep-learning/structuring-ml-projects' },
-      { text: '卷积神经网络', link: '/concepts/ai-tech/deep-learning/convolutional-neural-networks-course' },
-      { text: '循环序列模型', link: '/concepts/ai-tech/deep-learning/sequence-models-course' }
-    ]
-  },
-  {
-    text: '大模型应用工程',
-    collapsed: true,
-    items: [
-      { text: '大语言模型基础', link: '/concepts/ai-tech/llm-rag-agent/llm-basics' },
-      { text: 'RAG 与知识库', link: '/concepts/ai-tech/llm-rag-agent/rag-knowledge-base' },
-      { text: '对话式 AI', link: '/concepts/ai-tech/llm-rag-agent/conversational-ai' },
-      { text: '工具调用与工作流', link: '/concepts/ai-tech/llm-rag-agent/tool-calling-workflow' },
-      { text: 'Agent、MCP 与多智能体', link: '/concepts/ai-tech/llm-rag-agent/agent-mcp' },
-      { text: '多模态与上传图片', link: '/concepts/ai-tech/llm-rag-agent/multimodal-upload' },
-      { text: '评测、监控与可观测性', link: '/concepts/ai-tech/eval-governance/evals-observability' },
-      { text: 'AI 工程指标与监控看板', link: '/concepts/ai-tech/eval-governance/ai-engineering-metrics' },
-      { text: '成本、性能与部署决策', link: '/concepts/ai-tech/eval-governance/cost-performance' },
-      { text: '安全、隐私与治理', link: '/concepts/ai-tech/eval-governance/security-governance' }
+      { text: '3.4 序列到序列模型', link: '/concepts/ai-tech/nlp/seq2seq' },
+      { text: '第四章 预训练模型与 Python NLP 生态', link: '/concepts/ai-tech/nlp/pretraining-python-ecosystem' },
+      { text: '4.1 预训练模型', link: '/concepts/ai-tech/nlp/pretrained-models' },
+      { text: '4.2 BERT 系列模型', link: '/concepts/ai-tech/nlp/bert-models' },
+      { text: '4.3 生成式预训练模型', link: '/concepts/ai-tech/nlp/generative-pretrained-models' },
+      { text: '4.4 多模态预训练模型', link: '/concepts/ai-tech/nlp/multimodal-pretrained-models' },
+      { text: '4.5 Python NLP 生态', link: '/concepts/ai-tech/nlp/python-nlp-ecosystem' }
     ]
   }
 ]
