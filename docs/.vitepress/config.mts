@@ -123,6 +123,32 @@ const aiTechGroups = [
       { text: '4.4 多模态预训练模型', link: '/concepts/ai-tech/nlp/multimodal-pretrained-models' },
       { text: '4.5 Python NLP 生态', link: '/concepts/ai-tech/nlp/python-nlp-ecosystem' }
     ]
+  },
+  {
+    text: 'CV 教程',
+    collapsed: true,
+    items: [
+      { text: '计算机视觉教程总览', link: '/concepts/ai-tech/cv/' },
+      { text: '第一章 计算机视觉全景与图像基础', link: '/concepts/ai-tech/cv/01-image-foundations' },
+      { text: '第二章 OpenCV 与经典图像处理', link: '/concepts/ai-tech/cv/02-opencv-classic-processing' },
+      { text: '第三章 机器学习、神经网络与 PyTorch 基础', link: '/concepts/ai-tech/cv/03-ml-neural-pytorch' },
+      { text: '第四章 CNN 与图像分类', link: '/concepts/ai-tech/cv/04-cnn-classification' },
+      { text: '第五章 目标检测', link: '/concepts/ai-tech/cv/05-object-detection' },
+      { text: '第六章 图像分割', link: '/concepts/ai-tech/cv/06-image-segmentation' },
+      { text: '第七章 关键点、姿态、OCR 与人脸分析', link: '/concepts/ai-tech/cv/07-keypoints-ocr-face' },
+      { text: '第八章 视频理解与多目标跟踪', link: '/concepts/ai-tech/cv/08-video-tracking' },
+      { text: '第九章 多视图几何、深度、三维视觉与 SLAM', link: '/concepts/ai-tech/cv/09-3d-vision-slam' },
+      { text: '第十章 Vision Transformer、自监督学习与视觉基础模型', link: '/concepts/ai-tech/cv/10-vision-transformer-foundation-models' },
+      { text: '第十一章 生成式视觉：VAE、GAN 与扩散模型', link: '/concepts/ai-tech/cv/11-generative-vision' },
+      { text: '第十二章 数据集、标注、增强与数据治理', link: '/concepts/ai-tech/cv/12-data-governance' },
+      { text: '第十三章 训练、评估、错误分析与模型优化', link: '/concepts/ai-tech/cv/13-training-evaluation-optimization' },
+      { text: '第十四章 部署、加速、监控与生产工程', link: '/concepts/ai-tech/cv/14-deployment-production' },
+      { text: '第十五章 三个端到端实践项目', link: '/concepts/ai-tech/cv/15-end-to-end-projects' },
+      { text: '第十六章 行业落地、选型方法与学习路线', link: '/concepts/ai-tech/cv/16-industry-roadmap' },
+      { text: '附录 A 常用公式与指标速查', link: '/concepts/ai-tech/cv/appendix-a-formulas-metrics' },
+      { text: '附录 B 常见数据集与工具速查', link: '/concepts/ai-tech/cv/appendix-b-datasets-tools' },
+      { text: '参考资料与经典论文', link: '/concepts/ai-tech/cv/references' }
+    ]
   }
 ]
 
