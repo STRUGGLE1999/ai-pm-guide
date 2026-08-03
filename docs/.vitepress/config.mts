@@ -15,11 +15,21 @@ const titleMap: Record<string, string> = {
 }
 
 const concepts = [
-  'product-methodology',
   'product-basics',
   'ai-product-topics',
   'model-evaluation',
   'safety-and-compliance'
+]
+
+const productMethodology = [
+  { text: '课程总览', link: '/concepts/product-methodology/' },
+  { text: '第一章 需求洞察与竞品分析', link: '/concepts/product-methodology/01-demand-and-competition' },
+  { text: '第二章 行业分析与进入时机', link: '/concepts/product-methodology/02-industry-analysis' },
+  { text: '第三章 产品拆解与项目管理', link: '/concepts/product-methodology/03-product-and-project' },
+  { text: '第四章 数据埋点与指标体系', link: '/concepts/product-methodology/04-data-and-metrics' },
+  { text: '第五章 商业模式与效率提升', link: '/concepts/product-methodology/05-business-model' },
+  { text: '第六章 汇报沟通与情绪管理', link: '/concepts/product-methodology/06-communication' },
+  { text: '第七章 产品高手的长期修养', link: '/concepts/product-methodology/07-professional-growth' }
 ]
 
 const aiTechGroups = [
@@ -198,7 +208,14 @@ export default defineConfig({
         {
           text: '产品与专题',
           collapsed: true,
-          items: concepts.map((id) => ({ text: titleMap[id], link: `/concepts/${id}` }))
+          items: [
+            {
+              text: titleMap['product-methodology'],
+              collapsed: false,
+              items: productMethodology
+            },
+            ...concepts.map((id) => ({ text: titleMap[id], link: `/concepts/${id}` }))
+          ]
         }
       ],
       '/practice/': [
