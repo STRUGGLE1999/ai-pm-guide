@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 const titleMap: Record<string, string> = {
   'ai-tech': 'AI 技术基础总览',
   'product-methodology': '产品经理核心方法论',
+  'product-foundations': '产品基础知识',
   'product-basics': '产品经理基本功',
   'ai-product-topics': 'AI 产品专题',
   'model-evaluation': '模型评估与质量',
@@ -15,6 +16,7 @@ const titleMap: Record<string, string> = {
 }
 
 const concepts = [
+  'product-foundations',
   'product-basics',
   'ai-product-topics',
   'model-evaluation',
