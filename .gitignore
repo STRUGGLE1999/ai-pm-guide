@@ -10,3 +10,7 @@ docs/.vitepress/cache/
 
 # Local Netlify folder
 .netlify
+
+# Local review drafts and editor settings
+docs/drafts/
+.cursor/

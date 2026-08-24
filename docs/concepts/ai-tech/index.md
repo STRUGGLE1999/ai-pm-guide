@@ -25,6 +25,7 @@ AI 技术基础不要求你先学会推公式，更重要的是能看懂一个 A
 
 | 子目录 | 先读页面 | 学完要能回答 |
 | --- | --- | --- |
+| [大模型应用](/concepts/ai-tech/llm-rag-agent/) | 大语言模型、提示词、RAG、工具与工作流、Agent 与 MCP、微调、云与本地部署。 | 售后一类功能该先改提示词、补知识库、接工具，还是微调、私有化？ |
 | [基础](/concepts/ai-tech/foundations/linux-basics) | Linux、Python/NumPy、PyTorch 快速入门、Git、Python 爬虫。 | AI 项目里的文件、脚本、日志、环境和数据采集卡在哪里？ |
 | [机器学习](/concepts/ai-tech/ml/overview) | 机器学习教程、机器学习简介、机器学习如何工作、基础概念、Python 入门、进阶和十大算法。 | 这个需求是否适合机器学习？指标和数据是否够验收？ |
 | [NLP 教程](/concepts/ai-tech/nlp/) | 文本预处理、表示、分类、NER、关系抽取、相似度、RNN、Attention、Transformer、预训练模型与 Python NLP 生态。 | 文本能力到底是在分类、抽取、匹配、生成，还是检索？ |

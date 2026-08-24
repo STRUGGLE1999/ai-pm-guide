@@ -36,6 +36,23 @@ const productMethodology = [
 
 const aiTechGroups = [
   {
+    text: '大模型应用',
+    collapsed: false,
+    items: [
+      { text: '大模型应用导读', link: '/concepts/ai-tech/llm-rag-agent/' },
+      { text: '大语言模型基础', link: '/concepts/ai-tech/llm-rag-agent/llm-basics' },
+      { text: '提示词工程', link: '/concepts/ai-tech/llm-rag-agent/prompt-engineering' },
+      { text: 'RAG 与知识库', link: '/concepts/ai-tech/llm-rag-agent/rag-knowledge-base' },
+      { text: '对话式 AI', link: '/concepts/ai-tech/llm-rag-agent/conversational-ai' },
+      { text: '工具调用与工作流', link: '/concepts/ai-tech/llm-rag-agent/tool-calling-workflow' },
+      { text: 'Agent、MCP 与多智能体', link: '/concepts/ai-tech/llm-rag-agent/agent-mcp' },
+      { text: '微调该不该做', link: '/concepts/ai-tech/llm-rag-agent/fine-tuning' },
+      { text: '应用平台与部署选择', link: '/concepts/ai-tech/llm-rag-agent/app-stack-and-deployment' },
+      { text: '数据标注与专属数据集', link: '/concepts/ai-tech/llm-rag-agent/data-annotation-bespoke-datasets' },
+      { text: '多模态与上传图片', link: '/concepts/ai-tech/llm-rag-agent/multimodal-upload' }
+    ]
+  },
+  {
     text: '基础',
     collapsed: false,
     items: [
