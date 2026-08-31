@@ -13,4 +13,6 @@ docs/.vitepress/cache/
 
 # Local review drafts and editor settings
 docs/drafts/
+drafts/
 .cursor/
+tmp/

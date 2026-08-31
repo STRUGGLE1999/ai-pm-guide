@@ -12,7 +12,23 @@ const titleMap: Record<string, string> = {
   'customer-service-bot': '智能客服 Bot',
   'ai-search': 'AI 搜索',
   'content-generation': '内容生成工具',
-  'agent-workflow': 'Agent 工作流'
+  'agent-workflow': 'Agent 工作流',
+  'smart-report': '智能报表助手',
+  'sales-agent': '销售线索处理 Agent',
+  'meeting-notes': '会议纪要助手',
+  'contract-review': '合同审查助手',
+  'data-analyst-copilot': '数据分析 Copilot',
+  'resume-coach': 'AI 简历优化助手',
+  'research-agent': '行业研究 Agent',
+  'training-assistant': '企业培训助手',
+  'ops-copilot': '运营 Copilot',
+  'product-feedback-mining': '用户反馈挖掘',
+  'healthcare-ai': '医疗健康 AI',
+  'education-ai': '教育行业 AI',
+  'ecommerce-decision': '电商选品与智能决策',
+  'gov-tender': '政务与标书',
+  'companion-agent': '情绪陪伴与数字角色',
+  'industry-ops': '制造、零售餐饮与保险'
 }
 
 const concepts = [
@@ -183,12 +199,40 @@ const aiTechGroups = [
   }
 ]
 
-const practice = [
-  'ai-knowledge-base',
-  'customer-service-bot',
-  'ai-search',
-  'content-generation',
-  'agent-workflow'
+const practiceGroups = [
+  {
+    text: '通用案例',
+    collapsed: false,
+    items: [
+      { text: 'AI 知识库', link: '/practice/ai-knowledge-base' },
+      { text: '智能客服 Bot', link: '/practice/customer-service-bot' },
+      { text: 'AI 搜索', link: '/practice/ai-search' },
+      { text: '内容生成工具', link: '/practice/content-generation' },
+      { text: 'Agent 工作流', link: '/practice/agent-workflow' },
+      { text: '智能报表助手', link: '/practice/smart-report' },
+      { text: '销售线索处理 Agent', link: '/practice/sales-agent' },
+      { text: '会议纪要助手', link: '/practice/meeting-notes' },
+      { text: '合同审查助手', link: '/practice/contract-review' },
+      { text: '数据分析 Copilot', link: '/practice/data-analyst-copilot' },
+      { text: 'AI 简历优化助手', link: '/practice/resume-coach' },
+      { text: '行业研究 Agent', link: '/practice/research-agent' },
+      { text: '企业培训助手', link: '/practice/training-assistant' },
+      { text: '运营 Copilot', link: '/practice/ops-copilot' },
+      { text: '用户反馈挖掘', link: '/practice/product-feedback-mining' }
+    ]
+  },
+  {
+    text: '行业落地',
+    collapsed: false,
+    items: [
+      { text: '医疗健康 AI', link: '/practice/healthcare-ai' },
+      { text: '教育行业 AI', link: '/practice/education-ai' },
+      { text: '电商选品与智能决策', link: '/practice/ecommerce-decision' },
+      { text: '政务与标书', link: '/practice/gov-tender' },
+      { text: '情绪陪伴与数字角色', link: '/practice/companion-agent' },
+      { text: '制造、零售餐饮与保险', link: '/practice/industry-ops' }
+    ]
+  }
 ]
 
 export default defineConfig({
@@ -239,7 +283,7 @@ export default defineConfig({
       ],
       '/practice/': [
         { text: '实战案例', link: '/practice/' },
-        { text: '案例拆解', items: practice.map((id) => ({ text: titleMap[id], link: `/practice/${id}` })) }
+        ...practiceGroups
       ],
       '/roadmaps/': [
         { text: '学习路线', link: '/roadmaps/' },

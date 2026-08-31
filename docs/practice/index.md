@@ -1,5 +1,9 @@
 # 实战案例
 
+先用通用案例把输入、处理、输出和兜底写清楚，再选一个接近本职的行业页，把硬约束和责任人补上。
+
+## 通用案例
+
 - [AI 知识库](/practice/ai-knowledge-base)：让员工基于企业资料进行可信问答、摘要和知识复用。
 - [智能客服 Bot](/practice/customer-service-bot)：把 FAQ、追问、转人工和工单摘要串成闭环。
 - [AI 搜索](/practice/ai-search)：把搜索升级为答案、引用来源和下一步推荐。
@@ -15,3 +19,14 @@
 - [企业培训助手](/practice/training-assistant)：把课程资料转成测验、学习路径和答疑助手。
 - [运营 Copilot](/practice/ops-copilot)：支持活动文案、用户分群和复盘分析。
 - [用户反馈挖掘](/practice/product-feedback-mining)：从评论、工单和访谈中提取高频问题和需求机会。
+
+## 行业落地
+
+- [医疗健康 AI](/practice/healthcare-ai)：区分消费级咨询和临床辅助，医生最终决策。
+- [教育行业 AI](/practice/education-ai)：错题闭环和教师助手，教学责任留在人。
+- [电商选品与智能决策](/practice/ecommerce-decision)：规则淘汰、模型建议、人工确认。
+- [政务与标书](/practice/gov-tender)：文档工程与证据绑定，禁止虚构资质。
+- [情绪陪伴与数字角色](/practice/companion-agent)：身份提示、记忆治理和危机转介。
+- [制造、零售餐饮与保险](/practice/industry-ops)：硬约束走规则，大模型接管手册和摘要。
+
+选型方法见 [AI 产品专题](/concepts/ai-product-topics)。
