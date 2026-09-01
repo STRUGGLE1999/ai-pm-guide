@@ -1,0 +1,43 @@
+name: Daily AI Interview Questions Sync
+
+on:
+  schedule:
+    # 每天北京时间上午 09:00 准时触发 (UTC 01:00)
+    - cron: '0 1 * * *'
+  workflow_dispatch: # 支持在 GitHub 网页上手动一键触发
+
+permissions:
+  contents: write
+
+jobs:
+  sync-interview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: 🚀 Run Daily Interview Sync Script
+        run: npm run sync:interview
+
+      - name: 📤 Commit and Push Changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "chore(interview): daily automated sync for $(date +'%Y-%m-%d') [skip ci]"
+            git push origin main
+            echo "✅ 成功提交并推送每日最新名企面经！"
+          else
+            echo "ℹ️ 无新增变动，跳过提交。"
+          fi

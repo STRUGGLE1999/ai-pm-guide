@@ -294,13 +294,43 @@ export default defineConfig({
         ] }
       ],
       '/interview/': [
-        { text: '面试指南', link: '/interview/' },
-        { text: '题库与面经', items: [
-          { text: '100 道高频题', link: '/interview/questions' },
-          { text: '近期面经高频考点', link: '/interview/experience-summary' },
-          { text: '简历项目包装', link: '/interview/resume-projects' },
-          { text: '岗位方向拆解', link: '/interview/roles' }
-        ] }
+        { text: '面试指南总览', link: '/interview/' },
+        {
+          text: '💡 答题方法论',
+          collapsed: false,
+          items: [
+            { text: 'AI PM 黄金答题框架', link: '/interview/frameworks' }
+          ]
+        },
+        {
+          text: '🎯 分类高频题库精析',
+          collapsed: false,
+          items: [
+            { text: '① AI 技术通识与认知边界', link: '/interview/questions/ai-tech' },
+            { text: '② AI 原生产品与场景设计', link: '/interview/questions/product-design' },
+            { text: '③ 评测体系、指标与数据治理', link: '/interview/questions/eval-and-data' },
+            { text: '④ 业务价值、场景选型与 ROI', link: '/interview/questions/business-roi' },
+            { text: '⑤ 行为面试与跨职能协同', link: '/interview/questions/behavioral-projects' }
+          ]
+        },
+        {
+          text: '🔥 真实面经与真题推演',
+          collapsed: false,
+          items: [
+            { text: '名企面经专栏总览', link: '/interview/experiences/' },
+            { text: '2026-W36 周报（8.28~9.01）', link: '/interview/experiences/2026-w36' },
+            { text: '2026-W35 周报（8.24~8.27）', link: '/interview/experiences/2026-w35' },
+            { text: '大厂高频追问链复盘', link: '/interview/experience-summary' }
+          ]
+        },
+        {
+          text: '📝 简历与求职准备',
+          collapsed: false,
+          items: [
+            { text: '细分岗位方向与 JD 拆解', link: '/interview/roles' },
+            { text: '简历项目包装与高分范例', link: '/interview/resume-projects' }
+          ]
+        }
       ],
       '/resources/': [
         { text: '资源推荐', link: '/resources/' },

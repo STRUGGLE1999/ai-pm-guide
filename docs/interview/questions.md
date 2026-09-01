@@ -1,4 +1,13 @@
-# 100 道 AI 产品经理高频题
+# 100 道 AI 产品经理高频题速查
+
+::: tip 💡 题库深度精析推荐
+本页面为 100 道高频面试题大纲速查。若需查看 **详细解题框架、口语化参考回答示范与避坑追问链**，请前往以下分类题库：
+- [① AI 技术通识与认知边界题库](/interview/questions/ai-tech)
+- [② AI 原生产品与场景设计题库](/interview/questions/product-design)
+- [③ 评测体系、指标与数据治理题库](/interview/questions/eval-and-data)
+- [④ 业务价值、场景选型与 ROI 题库](/interview/questions/business-roi)
+- [⑤ 行为面试与跨职能协同题库](/interview/questions/behavioral-projects)
+:::
 
 ## AI 概念题
 
