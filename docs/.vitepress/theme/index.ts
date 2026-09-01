@@ -1,6 +1,7 @@
 import DefaultTheme from 'vitepress/theme'
 import { nextTick, onMounted, watch } from 'vue'
 import { useRoute } from 'vitepress'
+import Layout from './Layout.vue'
 import './style.css'
 
 declare global {
@@ -90,6 +91,7 @@ function useRichMarkdownRender() {
 
 export default {
   extends: DefaultTheme,
+  Layout,
   setup() {
     useRichMarkdownRender()
   }

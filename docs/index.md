@@ -5,9 +5,6 @@ hero:
   name: AI PM Guide
   text: AI 产品经理学习笔记
   tagline: 面向 AI 产品经理小白和转型人群的系统学习网站，覆盖概念学习、产品实战、学习路线、面试准备与资源推荐。
-  image:
-    src: /logo.svg
-    alt: AI PM Guide
   actions:
     - theme: brand
       text: 开始阅读

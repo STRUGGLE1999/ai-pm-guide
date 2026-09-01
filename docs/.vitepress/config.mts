@@ -242,13 +242,12 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   head: [
-    ['meta', { name: 'theme-color', content: '#2f6feb' }],
+    ['meta', { name: 'theme-color', content: '#4d4dff' }],
     ['meta', { property: 'og:title', content: 'AI PM Guide' }],
     ['meta', { property: 'og:description', content: '面向 AI 产品经理小白和转型人群的学习笔记库。' }]
   ],
   themeConfig: {
-    logo: { light: '/logo.svg', dark: '/logo.svg' },
-    siteTitle: 'AI PM Guide',
+    siteTitle: false,
     nav: [
       { text: '概念学习', link: '/concepts/' },
       { text: '实战案例', link: '/practice/' },

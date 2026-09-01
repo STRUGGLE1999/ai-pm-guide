@@ -1,26 +1,224 @@
 :root {
-  --vp-c-brand-1: #2f6feb;
-  --vp-c-brand-2: #1f4fbf;
-  --vp-c-brand-3: #7db4ff;
+  --vp-c-brand-1: hsl(240deg 95% 62%);
+  --vp-c-brand-2: hsl(240deg 95% 50%);
+  --vp-c-brand-3: hsl(240deg 80% 75%);
+  --vp-c-brand-soft: hsl(240deg 80% 96%);
+  --vp-c-secondary: hsl(333deg 100% 45%);
+  --vp-c-secondary-soft: hsl(333deg 100% 96%);
+  --vp-c-bg-soft: hsl(225deg 40% 96%);
+  --cloud-paper: var(--vp-c-bg);
+  --cloud-500: rgb(177, 223, 246);
+  --cloud-300: rgb(221, 238, 248);
+  --cloud-sky-from: rgb(160, 212, 238);
+  --cloud-sky-to: rgb(125, 196, 232);
+  --hero-handwriting-latin-font: "HanziPen SC", "HanziPen TC", "Bradley Hand", "Segoe Print", cursive;
+  --hero-handwriting-font: "Xingkai SC", "STXingkai", "HanziPen SC", "HanziPen TC", "Kaiti SC", "STKaiti", KaiTi, cursive;
   --vp-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   --vp-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-.VPHomeHero .name,
-.VPHomeHero .text {
-  font-family: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+.dark {
+  --cloud-paper: var(--vp-c-bg);
+  --cloud-500: rgb(18, 29, 43);
+  --cloud-300: rgb(14, 22, 32);
+  --cloud-sky-from: rgb(17, 27, 39);
+  --cloud-sky-to: rgb(38, 89, 115);
+  --vp-c-secondary-soft: hsl(333deg 60% 15%);
+}
+
+.VPFooter {
+  display: none !important;
+}
+
+@media (min-width: 960px) {
+  .Layout:has(.VPSidebar) .josh-footer {
+    padding-left: calc(var(--vp-sidebar-width) + 24px);
+    z-index: 11;
+  }
+
+  .Layout:has(.VPSidebar) .josh-footer .footer-inner {
+    max-width: 1056px;
+  }
+}
+
+html:has(.VPContent.is-home) {
+  --vp-nav-height: 80px;
+  background-color: var(--cloud-sky-from);
+}
+
+.Layout:has(.VPContent.is-home) .VPNavBar {
+  background-color: transparent !important;
+}
+
+.Layout:has(.VPContent.is-home) .VPNavBar .wrapper {
+  background-color: transparent !important;
+  backdrop-filter: none;
+}
+
+.Layout:has(.VPContent.is-home) .VPNavBar .divider {
+  display: none;
+}
+
+.VPHome {
+  position: relative;
+  background-color: var(--cloud-paper);
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.VPHomeHero {
+  position: relative !important;
+  height: 536px !important;
+  min-height: 536px !important;
+  background: var(--cloud-sky-from) !important;
+  padding-top: calc(var(--vp-nav-height) + 40px) !important;
+  padding-bottom: 80px !important;
+  margin-bottom: 0 !important;
+  overflow: hidden !important;
+  text-align: center !important;
+}
+
+.VPHomeFeatures {
+  position: relative;
+  z-index: 2;
+  margin-top: 0 !important;
+  padding-top: 12px !important;
+  background-color: var(--cloud-paper);
+}
+
+.VPHome .VPHomeContent,
+.VPHome .vp-doc {
+  position: relative;
+  z-index: 2;
+  background-color: var(--cloud-paper);
+}
+
+.VPHomeHero .container {
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+}
+
+.VPHomeHero .main {
+  text-align: center !important;
+  margin: 0 auto !important;
 }
 
 .VPHomeHero .name {
-  color: #3f6fa8;
+  display: inline-block;
+  font-family: var(--hero-handwriting-latin-font) !important;
+  font-size: clamp(38px, 6vw, 62px) !important;
+  font-synthesis: none;
+  font-style: normal;
+  font-weight: 400 !important;
+  letter-spacing: 0.015em;
+  color: var(--vp-c-brand-1) !important;
+  line-height: 1.2 !important;
+  margin-bottom: 10px !important;
+  transform: rotate(-1.1deg) skewX(-2deg);
+  transform-origin: center;
 }
 
 .dark .VPHomeHero .name {
-  color: #9cc8ff;
+  color: hsl(240deg 80% 75%) !important;
+}
+
+.VPHomeHero .text {
+  display: inline-block;
+  font-family: var(--hero-handwriting-font) !important;
+  font-size: clamp(24px, 4vw, 36px) !important;
+  font-synthesis: none;
+  font-style: normal;
+  font-weight: 400 !important;
+  letter-spacing: 0.045em;
+  color: var(--vp-c-text-1) !important;
+  line-height: 1.4 !important;
+  margin-bottom: 18px !important;
+  transform: rotate(0.55deg) skewX(-2.5deg);
+  transform-origin: center;
+}
+
+.VPHomeHero .tagline {
+  color: var(--vp-c-text-2) !important;
+  font-size: 17px !important;
+  max-width: 600px !important;
+  line-height: 1.6 !important;
+  margin: 0 auto 28px !important;
+}
+
+.VPHomeHero .actions {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  margin: 0 auto !important;
+}
+
+@media (max-width: 50rem) {
+  html:has(.VPContent.is-home) {
+    --vp-nav-height: 48px;
+  }
+
+  .VPHomeHero {
+    height: 520px !important;
+    min-height: 520px !important;
+    padding-top: calc(var(--vp-nav-height) + 52px) !important;
+    padding-bottom: 168px !important;
+  }
 }
 
 .VPHomeHero .image-bg {
-  background-image: linear-gradient(135deg, rgba(47, 111, 235, 0.22), rgba(47, 111, 235, 0.04));
+  background-image: linear-gradient(135deg, rgba(77, 77, 255, 0.22), rgba(77, 77, 255, 0.04));
+}
+
+.VPButton.brand {
+  background-color: var(--vp-c-brand-1) !important;
+  border-color: var(--vp-c-brand-1) !important;
+  box-shadow: 0 4px 14px rgba(77, 77, 255, 0.30) !important;
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  transition: transform 0.15s, box-shadow 0.18s, background-color 0.18s !important;
+}
+
+.VPButton.brand:hover {
+  background-color: var(--vp-c-brand-2) !important;
+  border-color: var(--vp-c-brand-2) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(77, 77, 255, 0.40) !important;
+}
+
+.VPButton.alt {
+  border-color: var(--vp-c-secondary) !important;
+  color: var(--vp-c-secondary) !important;
+  border-radius: 999px !important;
+  border-width: 2px !important;
+  font-weight: 700 !important;
+  background: transparent !important;
+  transition: transform 0.15s, background-color 0.18s !important;
+}
+
+.VPButton.alt:hover {
+  background-color: var(--vp-c-secondary-soft) !important;
+  transform: translateY(-1px) !important;
+}
+
+.VPFeature {
+  background-color: var(--vp-c-bg) !important;
+  border: 1px solid var(--vp-c-divider) !important;
+  border-top: 3px solid var(--vp-c-brand-1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 12px rgba(77, 77, 255, 0.05) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease !important;
+}
+
+.VPFeature:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 24px rgba(77, 77, 255, 0.12) !important;
+  border-color: var(--vp-c-brand-1) !important;
+}
+
+.VPFeature:nth-child(2) {
+  border-top-color: var(--vp-c-secondary) !important;
 }
 
 .VPNavBarMenuLink,
@@ -91,8 +289,8 @@
 }
 
 .vp-doc .custom-block.info {
-  border-color: rgba(47, 111, 235, 0.2);
-  background-color: rgba(47, 111, 235, 0.06);
+  border-color: rgba(77, 77, 255, 0.2);
+  background-color: var(--vp-c-brand-soft);
 }
 
 .vp-doc .mermaid {
@@ -116,8 +314,8 @@
 }
 
 .VPDocAsideOutline .VPDocOutlineItem .outline-link.active {
-  color: #2f6feb !important;
-  -webkit-text-fill-color: #2f6feb;
+  color: var(--vp-c-brand-1) !important;
+  -webkit-text-fill-color: var(--vp-c-brand-1);
   font-weight: 700;
 }
 
@@ -238,7 +436,7 @@
   height: 26px;
   margin-right: 8px;
   border-radius: 999px;
-  background: rgba(47, 111, 235, 0.1);
+  background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
   font-size: 12px;
   font-weight: 700;
@@ -250,7 +448,7 @@
   border-left: 4px solid var(--vp-c-brand-1);
   margin: 22px 0;
   padding: 12px 16px;
-  background: rgba(47, 111, 235, 0.06);
+  background: var(--vp-c-brand-soft);
 }
 
 .vp-doc .concept-checklist p {

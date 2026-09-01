@@ -74,22 +74,20 @@ function setActiveNav(route) {
 function renderHome() {
   app.innerHTML = `
     <section class="doc-hero">
-      <div class="hero-logo" aria-hidden="true">
-        <div class="logo-book">
-          <span class="logo-chip">AI</span>
-          <span class="logo-line blue"></span>
-          <span class="logo-line"></span>
-          <span class="logo-line blue short"></span>
-        </div>
-        <strong>AI PM</strong>
-      </div>
       <div class="hero-copy">
         <h1>AI PM Guide</h1>
         <p>面向 AI 产品经理小白和转型人群的学习笔记库，覆盖概念学习、产品实战、学习路线、面试准备与资源推荐。</p>
         <div class="doc-actions">
           <a class="button primary" href="#/concepts">开始阅读</a>
-          <a class="button soft" href="#/roadmaps">学习路线</a>
+          <a class="button secondary" href="#/roadmaps">学习路线</a>
         </div>
+      </div>
+      <div class="hero-clouds" aria-hidden="true">
+        <svg class="hero-clouds-svg" viewBox="0 0 1920 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="var(--cloud-500)" d="M0 140 V52 C520 18 1180 46 1920 34 V140 Z"/>
+          <path fill="var(--cloud-300)" d="M0 140 V68 C620 40 1240 62 1920 54 V140 Z"/>
+          <path fill="var(--cloud-paper)" d="M0 140 V90 C700 70 1300 86 1920 88 V140 Z"/>
+        </svg>
       </div>
     </section>
 
@@ -123,6 +121,7 @@ function renderHome() {
     </section>
   `;
 }
+
 
 function renderArticleList(title, items, route) {
   const categories = ["全部", ...new Set(items.map((item) => item.category))];
