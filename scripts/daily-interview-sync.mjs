@@ -7,7 +7,6 @@ const docsDir = path.join(root, 'docs')
 const expDir = path.join(docsDir, 'interview', 'experiences')
 const configPath = path.join(docsDir, '.vitepress', 'config.mts')
 const expIndexPath = path.join(expDir, 'index.md')
-const interviewIndexPath = path.join(docsDir, 'interview', 'index.md')
 
 // 获取 ISO 年份和周数（如 2026-w36）
 function getIsoWeek(d = new Date()) {
@@ -31,7 +30,112 @@ function formatDate(d = new Date()) {
   return `${y}-${m}-${day}`
 }
 
-// 备用名企高价值高质量真题池（当未配置外部 LLM API 或离线运行时使用）
+// 调用大模型 API 动态生成 5~8 道高价值名企真题
+async function fetchQuestionsFromLlm() {
+  const apiKey =
+    process.env.LLM_API_KEY ||
+    process.env.DEEPSEEK_API_KEY ||
+    process.env.OPENAI_API_KEY ||
+    process.env.KIMI_API_KEY ||
+    process.env.ZHIPU_API_KEY
+
+  if (!apiKey) {
+    console.log('ℹ️ 未检测到 LLM API Key 环境变量，自动使用内置名企高价值真题池。')
+    return null
+  }
+
+  let baseUrl = process.env.LLM_BASE_URL
+  let model = process.env.LLM_MODEL
+
+  if (!baseUrl) {
+    if (process.env.DEEPSEEK_API_KEY) baseUrl = 'https://api.deepseek.com/v1'
+    else if (process.env.KIMI_API_KEY) baseUrl = 'https://api.moonshot.cn/v1'
+    else if (process.env.ZHIPU_API_KEY) baseUrl = 'https://open.bigmodel.cn/api/paas/v4'
+    else baseUrl = 'https://api.deepseek.com/v1'
+  }
+
+  if (!model) {
+    if (process.env.DEEPSEEK_API_KEY) model = 'deepseek-chat'
+    else if (process.env.KIMI_API_KEY) model = 'moonshot-v1-8k'
+    else if (process.env.ZHIPU_API_KEY) model = 'glm-4-flash'
+    else model = 'deepseek-chat'
+  }
+
+  console.log(`🤖 正在通过大模型 API (${model} @ ${baseUrl}) 实时生成今日高价值真题...`)
+
+  const systemPrompt = `你是一名严谨的 AI 行业面试分析专家。请根据中国互联网名企（字节跳动、阿里巴巴、腾讯、百度、华为、美团、快手、小红书、滴滴、Kimi、DeepSeek、蚂蚁等）近期的真实社招面试趋势，生成 6 道高质量、有深度、非八股的 AI 产品经理（AI PM）真题及深度解答。
+
+要求：
+1. 涉及真实生产落地：覆盖 Agent 工作流编排、RAG 检索与切分、大模型长程评测、Token 成本算账、高危写操作风控、多模态或特定企业场景（飞书/钉钉/微信/剪映等）。
+2. 绝对不能出现“资深”、“AI 面试官”、“产品总监”等自吹自擂词汇。
+3. 参考回答示范必须采用第一人称口述，逻辑严谨，涉及数字一律使用“样本是 X、口径是 Y，严禁编造”。
+4. 必须输出严格的 JSON 数组格式，不要包含任何 markdown 代码块以外的闲聊文字。
+
+JSON 数据结构示例：
+[
+  {
+    "title": "题目名称（如：快手可灵类视频大模型首帧延迟高如何优化放弃率？）",
+    "company": "公司与场景（如：快手 · 可灵 AI / 多模态生成大模型产品面经）",
+    "focus": "核心考点实质（一两句话说明业务/技术本质）",
+    "answer": "第一人称详细参考口述示范（分点说明，带场景、方案、指标与风控）",
+    "followups": [
+      { "q": "面试官连环追问 1", "a": "高分续答" }
+    ],
+    "modifications": [
+      "换成自己项目时的修改点 1",
+      "换成自己项目时的修改点 2",
+      "换成自己项目时的修改点 3"
+    ]
+  }
+]`
+
+  try {
+    const res = await fetch(`${baseUrl.replace(/\/+$/, '')}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: '请立即生成今日的 6 道名企 AI 产品经理高价值社招真题 JSON 数据。' }
+        ],
+        temperature: 0.7,
+        response_format: { type: 'json_object' }
+      })
+    })
+
+    if (!res.ok) {
+      console.warn(`⚠️ 大模型 API 响应状态异常: ${res.status} ${res.statusText}`)
+      return null
+    }
+
+    const data = await res.json()
+    const rawText = data.choices?.[0]?.message?.content
+    if (!rawText) return null
+
+    let parsed = JSON.parse(rawText)
+    if (parsed.questions && Array.isArray(parsed.questions)) {
+      parsed = parsed.questions
+    } else if (!Array.isArray(parsed)) {
+      const arrayKey = Object.keys(parsed).find((k) => Array.isArray(parsed[k]))
+      if (arrayKey) parsed = parsed[arrayKey]
+    }
+
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      console.log(`✨ 大模型成功实时生成了 ${parsed.length} 道高价值真题！`)
+      return parsed
+    }
+    return null
+  } catch (err) {
+    console.warn(`⚠️ 调用大模型 API 出现异常，将自动回退到内置题库池: ${err.message}`)
+    return null
+  }
+}
+
+// 内置备用名企高价值高质量真题池（当未配置外部 LLM API 或网络异常时无缝回退）
 const fallbackSeedQuestions = [
   {
     title: '滴滴智能客服 / 司机助手：高时效长音频 ASR 识别错误与指令歧义如何处理？',
@@ -60,7 +164,7 @@ const fallbackSeedQuestions = [
     title: '百度搜索 AI 伙伴：如何解决多意图长查询（Multi-intent Query）的结构化拆解？',
     company: '百度 · 移动生态事业群（MEG）/ AI 搜索真题',
     focus: '长尾复杂自然语言 Query 的意图裂变、并行子任务检索与答案拼装融合。',
-    answer: `“面对复合型长查询（例如*‘对比特斯拉 Model Y 和极氪 7X 的续航、智驾方案与当前落地价格，并给出二胎家庭选购建议’*），系统必须经历**‘语义裂变 $\rightarrow$ 并行图谱/网页检索 $\rightarrow$ 矩阵化聚合’**：
+    answer: `“面对复合型长查询（例如*‘对比特斯拉 Model Y 和极氪 7X 的续航、智驾方案与当前落地价格，并给出二胎家庭选购建议’*），系统必须经历**‘语义裂变 $\\rightarrow$ 并行图谱/网页检索 $\\rightarrow$ 矩阵化聚合’**：
 1. **意图拓扑拆解（Query Decomposition）**：模型将长 Query 解析为 3 个事实检索子任务（Model Y 参数/价格、极氪 7X 参数/价格、家庭选购评测）和 1 个综合决策推理任务；
 2. **异构检索召回**：事实性参数走结构化汽车参数知识图谱，真实车主口碑走长尾网页与论坛检索；
 3. **表格化双栏呈现（Structured Synthesis）**：
@@ -195,7 +299,6 @@ outline: deep
 `
   } else {
     currentContent = fs.readFileSync(targetWeekFile, 'utf8')
-    // 匹配当前文件中最大的题号
     const qMatches = [...currentContent.matchAll(/### 题 (\d+)：/g)]
     if (qMatches.length > 0) {
       currentMaxQuestionNum = Math.max(...qMatches.map((m) => parseInt(m[1], 10)))
@@ -204,8 +307,12 @@ outline: deep
 
   console.log(`📊 当前文件已有最大题号: ${currentMaxQuestionNum}`)
 
-  // 挑选 5~8 道真题进行生成
-  const selectedQuestions = fallbackSeedQuestions.slice(0, 6)
+  // 尝试从大模型生成，如果未配置或失败则回退到备用题库
+  let selectedQuestions = await fetchQuestionsFromLlm()
+  if (!selectedQuestions || selectedQuestions.length === 0) {
+    selectedQuestions = fallbackSeedQuestions.slice(0, 6)
+  }
+
   let appendMarkdown = `\n---\n\n## 📅 ${todayStr}｜名企高价值真题同步与深度推演\n\n`
 
   selectedQuestions.forEach((item, idx) => {
@@ -259,12 +366,10 @@ outline: deep
     const tableHeader = '| 归档归属 | 覆盖周期 | 包含专场与重点方向 | 题目数量 | 直达链接 |\n| :--- | :--- | :--- | :--- | :--- |'
     
     if (expIndexContent.includes(weekInfo.id)) {
-      // 替换对应行的题目数
       const rowRegex = new RegExp(`(\\| \\*\\*${weekInfo.year} 年第 ${weekInfo.week} 周\\*\\* \\| [^|]+ \\| [^|]+ \\| )\\d+ 题( \\| \\[查看 [^]]+\\]\\(/interview/experiences/${weekInfo.id}\\) \\|)`, 'g')
       expIndexContent = expIndexContent.replace(rowRegex, `$1${totalQuestionsInWeek} 题$2`)
     } else {
-      // 新建一行插入到表头下方
-      const newRow = `\n| **${weekInfo.year} 年第 ${weekInfo.week} 周** | ${todayStr} 起 | • 滴滴/百度/蚂蚁/网易等名企前沿真题推演 | ${totalQuestionsInWeek} 题 | [查看 ${weekInfo.year}-W${String(weekInfo.week).padStart(2, '0')} 深度面经](/interview/experiences/${weekInfo.id}) |`
+      const newRow = `\n| **${weekInfo.year} 年第 ${weekInfo.week} 周** | ${todayStr} 起 | • 名企高价值前沿真题推演 | ${totalQuestionsInWeek} 题 | [查看 ${weekInfo.year}-W${String(weekInfo.week).padStart(2, '0')} 深度面经](/interview/experiences/${weekInfo.id}) |`
       expIndexContent = expIndexContent.replace(tableHeader, tableHeader + newRow)
     }
     fs.writeFileSync(expIndexPath, expIndexContent, 'utf8')
