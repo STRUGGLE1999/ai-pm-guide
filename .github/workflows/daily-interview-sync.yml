@@ -43,7 +43,15 @@ jobs:
           git config --local user.name "github-actions[bot]"
           if [ -n "$(git status --porcelain)" ]; then
             git add .
-            git commit -m "chore(interview): daily automated sync for $(date +'%Y-%m-%d') [skip ci]"
+            DAY_OF_WEEK=$(date +%u) # 1=周一, 7=周日
+            if [ "$DAY_OF_WEEK" = "7" ]; then
+              COMMIT_MSG="chore(interview): weekly concentrated production deploy for $(date +'%Y-%m-%d')"
+              echo "🚀 今天是周日，自动触发 Netlify 每周集中生产构建部署！"
+            else
+              COMMIT_MSG="chore(interview): daily automated sync for $(date +'%Y-%m-%d') [skip netlify] [skip ci]"
+              echo "ℹ️ 今天是平时归档，已添加 [skip netlify] 跳过 Netlify 构建以节省额度。"
+            fi
+            git commit -m "$COMMIT_MSG"
             git push origin main
             echo "✅ 成功提交并推送每日最新名企面经！"
           else
