@@ -318,6 +318,7 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: '名企面经专栏总览', link: '/interview/experiences/' },
+            { text: '2026-W44 周报', link: '/interview/experiences/2026-w44' },
             { text: '2026-W43 周报', link: '/interview/experiences/2026-w43' },
             { text: '2026-W42 周报', link: '/interview/experiences/2026-w42' },
             { text: '2026-W41 周报', link: '/interview/experiences/2026-w41' },
